@@ -1,0 +1,14 @@
+{
+  "FURINA_KEYWORD_ARKHE.title": "始基力",
+  "FURINA_KEYWORD_ARKHE.description": "分为[purple]荒性[/purple]与[color=#FFFF00]芒性[/color]。一些卡牌在不同的[gold]始基力[/gold]属性下，会根据其文字的颜色触发不同的描述效果。",
+  "FURINA_KEYWORD_INVITE.title": "邀请",
+  "FURINA_KEYWORD_INVITE.description": "根据你的[gold]始基力[/gold]属性，以3点生命召唤[purple]沙龙成员[/purple]或[color=#FFFF00]众水的歌者[/color]，重复[gold]邀请[/gold]同一目标改为强化其效果。\n[purple]沙龙成员[/purple]与[color=#FFFF00]众水的歌者[/color]仅能在对应的[gold]始基力[/gold]属性下存在。",
+  "FURINA_KEYWORD_OUSIA_PNEUMA.title": "荒芒",
+  "FURINA_KEYWORD_OUSIA_PNEUMA.description": "根据当前的[gold]始基力[/gold]属性，触发颜色不同的效果。",
+  "FURINA_KEYWORD_TROPE.title": "桥段",
+  "FURINA_KEYWORD_TROPE.description": "打出后进入[gold]剧本[/gold]而非弃牌堆。如果你没有[gold]剧本[/gold]，则先生成它。",
+  "FURINA_KEYWORD_MOVEMENT.title": "乐章",
+  "FURINA_KEYWORD_MOVEMENT.description": "初始无法打出。在你依次按照乐章中特定顺序的耗能打出卡牌后，解锁为可打出状态。",
+  "FURINA_KEYWORD_SCRIPT.title": "剧本",
+  "FURINA_KEYWORD_SCRIPT.description": "耗能等同于剧本内卡牌耗能之和（最高为3）的技能牌。"
+}

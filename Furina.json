@@ -1,0 +1,20 @@
+{
+  "id": "Furina",
+  "name": "Furina",
+  "author": "叶羽",
+  "description": "Add Furina from Genshin Impact as a playable character in Slay the Spire 2.",
+  "version": "0.2.1-alpha",
+  "has_pck": true,
+  "has_dll": true,
+  "dependencies": [
+    {
+      "id": "STS2-RitsuLib",
+      "min_version": "0.4.22"
+    },
+    {
+      "id": "MinionLib",
+      "min_version": "0.5.2"
+    }
+  ],
+  "affects_gameplay": true
+}

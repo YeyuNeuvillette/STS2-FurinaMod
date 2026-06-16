@@ -1,0 +1,32 @@
+[gd_scene load_steps=3 format=3 uid="uid://dme6klxe1lvlu"]
+
+[ext_resource type="Texture2D" uid="uid://ywaldu63je7h" path="res://Furina/images/minions/singer_of_many_waters.png" id="1"]
+[ext_resource type="Script" uid="uid://bq8ilroh5kpa8" path="res://Scripts/SingerOfManyWatersCreatureVisuals.cs" id="1_igbkv"]
+
+[node name="SingerOfManyWaters" type="Node2D"]
+script = ExtResource("1_igbkv")
+metadata/_edit_group_ = true
+
+[node name="Visuals" type="Sprite2D" parent="."]
+unique_name_in_owner = true
+position = Vector2(0.019, -107.83)
+scale = Vector2(0.0923884, 0.0923884)
+texture = ExtResource("1")
+
+[node name="Bounds" type="Control" parent="."]
+unique_name_in_owner = true
+layout_mode = 3
+anchors_preset = 0
+offset_left = -59.0
+offset_top = -231.0
+offset_right = 58.0
+offset_bottom = 20.0
+mouse_filter = 2
+
+[node name="CenterPos" type="Marker2D" parent="."]
+unique_name_in_owner = true
+position = Vector2(0, -123.86)
+
+[node name="IntentPos" type="Marker2D" parent="."]
+unique_name_in_owner = true
+position = Vector2(0, -246.455)

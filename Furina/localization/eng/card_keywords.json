@@ -1,0 +1,14 @@
+{
+  "FURINA_KEYWORD_ARKHE.title": "Arkhe",
+  "FURINA_KEYWORD_ARKHE.description": "Divided into Ousia and Pneuma. Some cards trigger different effects based on their description color under different Arkhe attributes.",
+  "FURINA_KEYWORD_INVITE.title": "Invite",
+  "FURINA_KEYWORD_INVITE.description": "Summon [purple]Salon Member[/purple] or [color=#FFFF00]Singer of Many Waters[/color] at the cost of 3 HP. Re-inviting the same target enhances its effect instead.",
+  "FURINA_KEYWORD_OUSIA_PNEUMA.title": "[purple]Ousia[/purple][color=#FFFF00]Pneuma[/color]",
+  "FURINA_KEYWORD_OUSIA_PNEUMA.description": "Effects with different colors than your current [gold]Arkhe[/gold] attribute will not trigger.",
+  "FURINA_KEYWORD_TROPE.title": "Trope",
+  "FURINA_KEYWORD_TROPE.description": "After playing, this card enters the [gold]Script[/gold] pile instead of the discard pile. If it also has the [gold]Exhaust[/gold] keyword, it enters the [gold]Script[/gold] pile instead of the exhaust pile.",
+  "FURINA_KEYWORD_MOVEMENT.title": "Movement",
+  "FURINA_KEYWORD_MOVEMENT.description": "Initially unplayable. Monitors the energy costs of cards you play. If they match the set sequence, this card becomes playable.",
+  "FURINA_KEYWORD_SCRIPT.title": "Script",
+  "FURINA_KEYWORD_SCRIPT.description": "A skill card whose energy cost equals the sum of the energy costs of cards in the script (maximum 3)."
+}

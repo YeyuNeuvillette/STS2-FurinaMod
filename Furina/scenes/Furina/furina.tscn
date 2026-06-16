@@ -1,0 +1,43 @@
+[gd_scene load_steps=4 format=3 uid="uid://cpqwti5x0rwgb"]
+
+[ext_resource type="Texture2D" uid="uid://cdijwny4532jf" path="res://Furina/images/characters/Furina/furina_char.png" id="1_dopqu"]
+[ext_resource type="Script" uid="uid://4quuv8fgjtqi" path="res://Scripts/FurinaCreatureVisuals.cs" id="1_igbkv"]
+[ext_resource type="Texture2D" uid="uid://41cdvao11k72" path="res://Furina/images/characters/Furina/furina_char2.png" id="2_pneuma"]
+
+[node name="Furina" type="Node2D"]
+script = ExtResource("1_igbkv")
+
+[node name="Visuals" type="Sprite2D" parent="."]
+unique_name_in_owner = true
+
+[node name="Furina" type="Sprite2D" parent="Visuals"]
+position = Vector2(2, -151)
+scale = Vector2(0.11957972, 0.119232476)
+texture = ExtResource("1_dopqu")
+
+[node name="FurinaPneuma" type="Sprite2D" parent="Visuals"]
+visible = false
+position = Vector2(2, -151)
+scale = Vector2(0.11957972, 0.119232476)
+texture = ExtResource("2_pneuma")
+
+[node name="Bounds" type="Control" parent="."]
+unique_name_in_owner = true
+layout_mode = 3
+anchors_preset = 0
+offset_left = -104.0
+offset_top = -354.0
+offset_right = 103.0
+offset_bottom = 17.0
+
+[node name="IntentPos" type="Marker2D" parent="."]
+unique_name_in_owner = true
+position = Vector2(88, -357)
+
+[node name="CenterPos" type="Marker2D" parent="."]
+unique_name_in_owner = true
+position = Vector2(8, -184)
+
+[node name="TalkPos" type="Marker2D" parent="."]
+unique_name_in_owner = true
+position = Vector2(86, -302)

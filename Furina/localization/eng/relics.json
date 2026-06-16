@@ -1,0 +1,8 @@
+{
+  "FURINA_RELIC_SOLOISTS_SOLICITATION.title": "Soloist's Solicitation",
+  "FURINA_RELIC_SOLOISTS_SOLICITATION.description": "At the start of combat, set your Arkhe to Ousia. At the start of your turn, gain 1 Salute.",
+  "FURINA_RELIC_SOLOISTS_SOLICITATION.flavor": "A grand stage awaits, and the show must go on.",
+  "FURINA_RELIC_LET_THE_PEOPLE_REJOICE.title": "Let the People Rejoice",
+  "FURINA_RELIC_LET_THE_PEOPLE_REJOICE.description": "At the start of combat, set your Arkhe to Ousia. At the start of your turn, gain 1 Salute. Whenever you switch your Arkhe, gain {energyPrefix:energyIcons(1)}.",
+  "FURINA_RELIC_LET_THE_PEOPLE_REJOICE.flavor": "When all voices converge as one, that is when judgment descends."
+}

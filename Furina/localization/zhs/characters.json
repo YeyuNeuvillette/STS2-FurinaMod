@@ -1,0 +1,18 @@
+{
+  "FURINA_CHARACTER_FURINA.title": "芙宁娜",
+  "FURINA_CHARACTER_FURINA.titleObject": "芙宁娜",
+  "FURINA_CHARACTER_FURINA.description": "舞台上的绝对焦点。\n邀请伙伴们与高塔中的演员们共演。",
+  "FURINA_CHARACTER_FURINA.selectMessage": "好戏开场了！",
+  "FURINA_CHARACTER_FURINA.pronounObject": "她",
+  "FURINA_CHARACTER_FURINA.possessiveAdjective": "她的",
+  "FURINA_CHARACTER_FURINA.pronounPossessive": "她的",
+  "FURINA_CHARACTER_FURINA.pronounSubject": "她",
+  "FURINA_CHARACTER_FURINA.cardsModifierTitle": "芙宁娜卡牌",
+  "FURINA_CHARACTER_FURINA.cardsModifierDescription": "芙宁娜的卡牌现在会出现在奖励和商店中。",
+  "FURINA_CHARACTER_FURINA.unlockText": "用[pink]{Prerequisite}[/pink]进行一局游戏来解锁这个角色。",
+  "FURINA_CHARACTER_FURINA.aromaPrinciple": "...",
+  "FURINA_CHARACTER_FURINA.goldMonologue": "不得不承认，这相当高效。",
+  "FURINA_CHARACTER_FURINA.eventDeathPrevention": "别看我……丢人的样子……",
+  "FURINA_CHARACTER_FURINA.banter.alive.endTurnPing": "真是漫长的中场休息……",
+  "FURINA_CHARACTER_FURINA.banter.dead.endTurnPing": "……"
+}

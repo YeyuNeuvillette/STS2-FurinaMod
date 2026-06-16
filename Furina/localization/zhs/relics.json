@@ -1,0 +1,8 @@
+{
+  "FURINA_RELIC_SOLOISTS_SOLICITATION.title": "独舞之邀",
+  "FURINA_RELIC_SOLOISTS_SOLICITATION.description": "战斗开始时，切换你的[gold]始基力[/gold]为[purple]荒性[/purple]。回合开始时，生成[gold]圣俗杂座[/gold]。",
+  "FURINA_RELIC_SOLOISTS_SOLICITATION.flavor": "宏大的舞台在等待，演出必须继续。",
+  "FURINA_RELIC_LET_THE_PEOPLE_REJOICE.title": "万众狂欢",
+  "FURINA_RELIC_LET_THE_PEOPLE_REJOICE.description": "战斗开始时，切换你的[gold]始基力[/gold]为[purple]荒性[/purple]。回合开始时，生成[gold]圣俗杂座[/gold]。在你切换[gold]始基力[/gold]属性后，获得{energyPrefix:energyIcons(1)}。",
+  "FURINA_RELIC_LET_THE_PEOPLE_REJOICE.flavor": "当所有声音汇聚为一，便是审判降临之时。"
+}

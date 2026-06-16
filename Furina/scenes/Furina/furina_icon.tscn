@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=3 uid="uid://dc0ttmrceqyxx"]
+
+[ext_resource type="Texture2D" uid="uid://blo6kea3fslf7" path="res://Furina/images/ui/top_panel/furina_icon.png" id="1_70pjq"]
+
+[node name="FurinaIcon" type="TextureRect"]
+offset_right = 57.0
+offset_bottom = 57.0
+texture = ExtResource("1_70pjq")
+expand_mode = 1

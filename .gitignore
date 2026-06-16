@@ -1,0 +1,9 @@
+.godot/
+.export/
+.vscode/
+.vs/
+bin/
+obj/
+*.pck
+local.props
+Furina/images/

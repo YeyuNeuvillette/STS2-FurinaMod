@@ -1,0 +1,13 @@
+[gd_scene load_steps=2 format=3 uid="uid://ci4m6tdr7s00i"]
+
+[ext_resource type="Texture2D" uid="uid://c4d7orj1aoa3m" path="res://Furina/images/characters/Furina/furina_merchant.png" id="1_d7pa8"]
+
+[node name="FurinaMerchant" type="Node2D"]
+
+[node name="TextureRect" type="TextureRect" parent="."]
+offset_left = -184.0
+offset_top = -447.0
+offset_right = 183.0
+offset_bottom = 22.150879
+texture = ExtResource("1_d7pa8")
+expand_mode = 1

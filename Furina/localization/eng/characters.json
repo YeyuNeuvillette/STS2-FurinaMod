@@ -1,0 +1,18 @@
+{
+  "FURINA_CHARACTER_FURINA.title": "Furina",
+  "FURINA_CHARACTER_FURINA.titleObject": "Furina",
+  "FURINA_CHARACTER_FURINA.description": "The absolute focus of the stage.\nInvite companions to co-perform with the actors in the tower.",
+  "FURINA_CHARACTER_FURINA.selectMessage": "Let the show begin!",
+  "FURINA_CHARACTER_FURINA.pronounObject": "her",
+  "FURINA_CHARACTER_FURINA.possessiveAdjective": "her",
+  "FURINA_CHARACTER_FURINA.pronounPossessive": "her",
+  "FURINA_CHARACTER_FURINA.pronounSubject": "her",
+  "FURINA_CHARACTER_FURINA.cardsModifierTitle": "Furina Cards",
+  "FURINA_CHARACTER_FURINA.cardsModifierDescription": "Furina's cards will now appear in rewards and shops.",
+  "FURINA_CHARACTER_FURINA.unlockText": "Play a game with [pink]{Prerequisite}[/pink] to unlock this character.",
+  "FURINA_CHARACTER_FURINA.aromaPrinciple": "...",
+  "FURINA_CHARACTER_FURINA.goldMonologue": "I must admit, this is quite efficient.",
+  "FURINA_CHARACTER_FURINA.eventDeathPrevention": "I'm not a bad person...",
+  "FURINA_CHARACTER_FURINA.banter.alive.endTurnPing": "...",
+  "FURINA_CHARACTER_FURINA.banter.dead.endTurnPing": "..."
+}
