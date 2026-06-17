@@ -104,5 +104,5 @@
   "FURINA_CARD_ENTRUST.title": "托付",
   "FURINA_CARD_ENTRUST.description": "获得{Block:diff()}点[gold]格挡[/gold]。\n{ArkheState:choose(Ousia|Pneuma|None):[purple]回合结束时，如果此牌在你手中，失去{HpLoss:diff()}点生命。[/purple]|[color=#FFFF00]虚无。消耗。[/color]|[purple]回合结束时，如果此牌在你手中，失去{HpLoss:diff()}点生命。[/purple]\n[color=#FFFF00]虚无。消耗。[/color]}",
   "FURINA_CARD_MISE_EN_SCENE.title": "场面调度",
-  "FURINA_CARD_MISE_EN_SCENE.description": "{ArkheState:choose(Ousia|Pneuma|None):从你的[purple]抽牌堆[/purple]中选择2张牌加入手牌。|从你的[color=#FFFF00]弃牌堆[/color]中选择2张牌加入手牌。|从你的[purple]抽牌堆[/purple][color=#FFFF00]弃牌堆[/color]中选择2张牌加入手牌。}"
+  "FURINA_CARD_MISE_EN_SCENE.description": "{ArkheState:choose(Ousia|Pneuma|None):从你的[purple]抽牌堆[/purple]中选择1张牌加入手牌。|从你的[color=#FFFF00]弃牌堆[/color]中选择1张牌加入手牌。|从你的[purple]抽牌堆[/purple][color=#FFFF00]弃牌堆[/color]中选择1张牌加入手牌。}"
 }
