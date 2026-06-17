@@ -16,8 +16,7 @@ public sealed class MiseEnScene : OusiaPneumaCard
 {
     public override IEnumerable<CardKeyword> CanonicalKeywords => new List<CardKeyword>
     {
-        ModKeywordRegistry.GetCardKeyword("FURINA_KEYWORD_OUSIA_PNEUMA"),
-        CardKeyword.Exhaust
+        ModKeywordRegistry.GetCardKeyword("FURINA_KEYWORD_OUSIA_PNEUMA")
     };
 
     public MiseEnScene()
@@ -30,23 +29,23 @@ public sealed class MiseEnScene : OusiaPneumaCard
 
     protected override async Task OnOusiaEffect(PlayerChoiceContext choiceContext, CardPlay cardPlay)
     {
-        await SelectFromDrawPile(choiceContext, 2);
+        await SelectFromDrawPile(choiceContext, 1);
     }
 
     protected override async Task OnPneumaEffect(PlayerChoiceContext choiceContext, CardPlay cardPlay)
     {
-        await SelectFromDiscardPile(choiceContext, 2);
+        await SelectFromDiscardPile(choiceContext, 1);
     }
 
     protected override async Task OnNoArkheEffect(PlayerChoiceContext choiceContext, CardPlay cardPlay)
     {
-        await SelectFromDrawPile(choiceContext, 2);
+        await SelectFromDrawPile(choiceContext, 1);
     }
 
     protected override async Task OnChorusEffect(PlayerChoiceContext choiceContext, CardPlay cardPlay)
     {
-        await SelectFromDrawPile(choiceContext, 2);
-        await SelectFromDiscardPile(choiceContext, 2);
+        await SelectFromDrawPile(choiceContext, 1);
+        await SelectFromDiscardPile(choiceContext, 1);
     }
 
     private async Task SelectFromDrawPile(PlayerChoiceContext choiceContext, int count)
@@ -89,6 +88,6 @@ public sealed class MiseEnScene : OusiaPneumaCard
 
     protected override void OnUpgrade()
     {
-        RemoveKeyword(CardKeyword.Exhaust);
+        EnergyCost.UpgradeBy(-1);
     }
 }

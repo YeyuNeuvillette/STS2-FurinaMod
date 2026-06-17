@@ -17,7 +17,7 @@ public sealed class Reversal : TropeCard
 {
     protected override IEnumerable<DynamicVar> CanonicalVars => new List<DynamicVar> 
     { 
-        new DamageVar(9m, ValueProp.Move)
+        new DamageVar(10m, ValueProp.Move)
     };
 
     public Reversal()

@@ -64,7 +64,7 @@
   "FURINA_CARD_ENCORE.title": "安可",
   "FURINA_CARD_ENCORE.description": "造成{Damage:diff()}点伤害。\n如果本回合你至少打出过5张其他牌，抽{Cards:diff()}张牌并获得{energyPrefix:energyIcons(1)}。",
   "FURINA_CARD_LAST_STAND.title": "背水一战",
-  "FURINA_CARD_LAST_STAND.description": "造成{Damage:diff()}点伤害。\n你无法于本回合内从卡牌中获得[gold]格挡[/gold]。",
+  "FURINA_CARD_LAST_STAND.description": "造成{Damage:diff()}点伤害。\n1回合内，你无法从卡牌中获得[gold]格挡[/gold]。",
   "FURINA_CARD_MODULATION.title": "变调",
   "FURINA_CARD_MODULATION.description": "{ArkheState:choose(Ousia|Pneuma|None):对所有敌人造成{Damage:diff()}点伤害[purple]并给予其{VulnerablePower:diff()}层易伤[/purple]。|对所有敌人造成{Damage:diff()}点伤害[color=#FFFF00]2次[/color]。|对所有敌人造成{Damage:diff()}点伤害[purple]并给予其{VulnerablePower:diff()}层易伤[/purple][color=#FFFF00]2次[/color]。}",
   "FURINA_CARD_ADAPT.title": "随机应变",

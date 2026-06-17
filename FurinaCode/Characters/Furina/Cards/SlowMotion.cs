@@ -24,7 +24,7 @@ public sealed class SlowMotion : FurinaCard
         [HoverTipFactory.FromPower<SlowPower>()];
 
     public SlowMotion()
-        : base(2, CardType.Skill, CardRarity.Uncommon, TargetType.AnyEnemy)
+        : base(1, CardType.Skill, CardRarity.Uncommon, TargetType.AnyEnemy)
     {
     }
 

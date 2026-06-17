@@ -18,8 +18,8 @@ public sealed class Impromptu : OusiaPneumaCard
 {
     protected override IEnumerable<DynamicVar> CanonicalVars => new List<DynamicVar>
     {
-        new DamageVar(5m, ValueProp.Move),
-        new BlockVar(3m, ValueProp.Move)
+        new DamageVar(6m, ValueProp.Move),
+        new BlockVar(4m, ValueProp.Move)
     };
 
     public override bool GainsBlock => true;

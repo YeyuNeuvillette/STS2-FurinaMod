@@ -21,7 +21,7 @@ public sealed class AllTheWorldsAStage : FurinaCard
     public override IEnumerable<CardKeyword> CanonicalKeywords => new List<CardKeyword> { CardKeyword.Exhaust };
 
     public AllTheWorldsAStage()
-        : base(2, CardType.Skill, CardRarity.Rare, TargetType.None)
+        : base(1, CardType.Skill, CardRarity.Rare, TargetType.None)
     {
     }
 
