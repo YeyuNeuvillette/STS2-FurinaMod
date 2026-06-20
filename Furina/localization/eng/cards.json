@@ -104,5 +104,7 @@
   "FURINA_CARD_ENTRUST.title": "Entrust",
   "FURINA_CARD_ENTRUST.description": "Gain {Block:diff()} [gold]Block[/gold].\n{ArkheState:choose(Ousia|Pneuma|None):[purple]At the end of your turn, if this card is in your hand, lose {HpLoss:diff()} HP.[/purple]|[color=#FFFF00]Exhaust.[/color]|[purple]At the end of your turn, if this card is in your hand, lose {HpLoss:diff()} HP.[/purple]\n[color=#FFFF00]Exhaust.[/color]}",
   "FURINA_CARD_MISE_EN_SCENE.title": "Mise en Scène",
-  "FURINA_CARD_MISE_EN_SCENE.description": "{ArkheState:choose(Ousia|Pneuma|None):Choose 2 cards from your [purple]Draw Pile[/purple] to add to your hand. Exhaust.|Choose 2 cards from your [color=#FFFF00]Discard Pile[/color] to add to your hand. Exhaust.|Choose 2 cards from your Draw Pile to add to your hand. Exhaust.}"
+  "FURINA_CARD_MISE_EN_SCENE.description": "{ArkheState:choose(Ousia|Pneuma|None):Choose 2 cards from your [purple]Draw Pile[/purple] to add to your hand. Exhaust.|Choose 2 cards from your [color=#FFFF00]Discard Pile[/color] to add to your hand. Exhaust.|Choose 2 cards from your Draw Pile to add to your hand. Exhaust.}",
+  "FURINA_CARD_BACKUP_DANCER.title": "Backup Dancer",
+  "FURINA_CARD_BACKUP_DANCER.description": "Gain {Block} [gold]Block[/gold], {Repeat:diff()} times.\nWhen you upgrade another card, this card also upgrades."
 }

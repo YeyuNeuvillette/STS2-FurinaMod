@@ -38,38 +38,7 @@ public sealed class Script : BaseCard
         ModKeywordRegistry.GetCardKeyword("FURINA_KEYWORD_SCRIPT")
     };
 
-    protected override int CanonicalEnergyCost
-    {
-        get
-        {
-            GD.Print($"[Script] CanonicalEnergyCost getter called");
-            
-            if (Owner?.PlayerCombatState == null)
-            {
-                GD.Print($"[Script] Owner or PlayerCombatState is null, returning 0");
-                return 0;
-            }
-
-            var scriptPileType = GetScriptPileType();
-            var scriptPile = scriptPileType.GetPile(Owner);
-
-            GD.Print($"[Script] Script pile: {scriptPile.Type}, Cards count: {scriptPile.Cards.Count}");
-
-            if (scriptPile.Cards.Count == 0)
-            {
-                GD.Print($"[Script] Script pile is empty, returning 0");
-                return 0;
-            }
-
-            var totalCost = scriptPile.Cards
-                .Select(card => card.EnergyCost.GetWithModifiers(CostModifiers.All))
-                .Sum();
-            
-            var finalCost = Math.Min(totalCost, 3);
-            GD.Print($"[Script] Final energy cost: {finalCost} (calculated: {totalCost}, capped at 3)");
-            return finalCost;
-        }
-    }
+    protected override int CanonicalEnergyCost => 0;
 
     protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay cardPlay)
     {
@@ -153,7 +122,7 @@ public sealed class Script : BaseCard
                 _scriptPile.ContentsChanged += OnScriptPileContentsChanged;
                 _hasSubscribed = true;
                 GD.Print($"[Script] Subscription successful, triggering initial energy cost update");
-                InvokeEnergyCostChanged();
+                OnScriptPileContentsChanged();
             }
         }
     }

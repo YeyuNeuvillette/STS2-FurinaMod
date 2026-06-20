@@ -11,6 +11,7 @@ using STS2RitsuLib.Keywords;
 using MinionLib.RightClick;
 using Furina.Characters.Base;
 using Furina.Characters.Furina.Cards;
+using Furina.Characters.Furina.Patches;
 using Furina.Characters.Furina.Powers;
 using Furina.Characters.Furina.RightClick;
 using Furina.Characters.Furina.Relics;
@@ -52,10 +53,12 @@ public partial class MainFile : Node
         ScriptPileRegistration.Register();
         SubscribeToCombatEvents();
         SufferingHolySonManager.Register();
-        RitsuLibFramework.SubscribeLifecycle<CombatStartingEvent>(_ =>
+        RitsuLibFramework.SubscribeLifecycle<CombatStartingEvent>(evt =>
         {
             MovementCard.ResetCombatState();
             MinionStorage.ClearAll();
+            if (evt.CombatState is CombatState combatState)
+                BackupDancer.SubscribeAllForCombat(combatState.Players);
         });
         RitsuLibFramework.SubscribeLifecycle<SideTurnStartingEvent>(evt =>
         {
@@ -82,6 +85,7 @@ public partial class MainFile : Node
     private static void OnCombatEnded(CombatRoom _)
     {
         ScriptPileRegistration.OnCombatEnd();
+        CardUpgradeEventBus.Clear();
     }
 
     private static void RegisterKeywords()
