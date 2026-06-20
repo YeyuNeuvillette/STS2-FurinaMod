@@ -58,5 +58,8 @@
   "FURINA_POWER_EVERYONE_OUT_POWER.smartDescription": "Your Salon members can take {Amount} additional action(s).",
   "FURINA_POWER_WATER_AND_JUSTICE_POWER.title": "Water and Justice",
   "FURINA_POWER_WATER_AND_JUSTICE_POWER.description": "At the end of combat, remove \"Water and Justice\" from your deck.",
-  "FURINA_POWER_WATER_AND_JUSTICE_POWER.smartDescription": "At the end of combat, remove \"Water and Justice\" from your deck."
+  "FURINA_POWER_WATER_AND_JUSTICE_POWER.smartDescription": "At the end of combat, remove \"Water and Justice\" from your deck.",
+  "FURINA_POWER_BLANK_SPACE_POWER.title": "Blank Space",
+  "FURINA_POWER_BLANK_SPACE_POWER.description": "You will not receive card rewards at the end of combat.",
+  "FURINA_POWER_BLANK_SPACE_POWER.smartDescription": "You will not receive card rewards at the end of combat."
 }

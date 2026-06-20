@@ -87,6 +87,9 @@ public sealed class BackupDancer : BaseCard
         if (IsInCombat != upgradedCard.IsInCombat)
             return;
 
+        if (Owner != upgradedCard.Owner)
+            return;
+
         CardUpgradeEventBus.PropagateUpgrade(() => CardCmd.Upgrade(this));
     }
 

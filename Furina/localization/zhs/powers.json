@@ -58,5 +58,8 @@
   "FURINA_POWER_EVERYONE_OUT_POWER.smartDescription": "你的沙龙成员可以额外行动{Amount}次。",
   "FURINA_POWER_WATER_AND_JUSTICE_POWER.title": "水与正义",
   "FURINA_POWER_WATER_AND_JUSTICE_POWER.description": "战斗结束后，将“水与正义”移出牌组。",
-  "FURINA_POWER_WATER_AND_JUSTICE_POWER.smartDescription": "战斗结束后，将“水与正义”移出牌组。"
+  "FURINA_POWER_WATER_AND_JUSTICE_POWER.smartDescription": "战斗结束后，将“水与正义”移出牌组。",
+  "FURINA_POWER_BLANK_SPACE_POWER.title": "留白",
+  "FURINA_POWER_BLANK_SPACE_POWER.description": "战斗结束后，你不会获得卡牌奖励。",
+  "FURINA_POWER_BLANK_SPACE_POWER.smartDescription": "战斗结束后，你不会获得卡牌奖励。"
 }
