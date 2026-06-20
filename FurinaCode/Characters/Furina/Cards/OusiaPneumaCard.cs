@@ -290,13 +290,13 @@ public abstract class OusiaPneumaCard(
                 return;
             }
 
-            if (_forceNoneState)
+            var creature = Owner.Creature;
+
+            if (ArkheDualEffectHelper.HasActiveProvider(creature))
             {
                 CurrentArkheState = ArkheState.None;
                 return;
             }
-
-            var creature = Owner.Creature;
 
             if (creature.HasPower<OusiaPower>())
             {
@@ -365,13 +365,21 @@ public abstract class OusiaPneumaCard(
     protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay cardPlay)
     {
         if (Owner?.Creature == null)
+        {
+            GD.Print($"[OusiaPneumaCard] OnPlay early return: Owner or Creature is null for card {base.Id?.Entry ?? "UNKNOWN"}");
             return;
+        }
 
         var creature = Owner.Creature;
         var dualEffectProvider = ArkheDualEffectHelper.GetFirstActiveProvider(creature);
 
+        UpdateArkheState();
+
+        GD.Print($"[OusiaPneumaCard] OnPlay for card {base.Id?.Entry ?? "UNKNOWN"}: CurrentArkheState={CurrentArkheState}, ForceNoneState={_forceNoneState}, hasDualProvider={dualEffectProvider != null}");
+
         if (dualEffectProvider != null)
         {
+            GD.Print($"[OusiaPneumaCard] OnPlay -> OnChorusEffect for card {base.Id?.Entry ?? "UNKNOWN"}");
             await OnChorusEffect(choiceContext, cardPlay);
             await dualEffectProvider.OnArkheCardPlayed(choiceContext, this);
             return;
@@ -380,12 +388,15 @@ public abstract class OusiaPneumaCard(
         switch (CurrentArkheState)
         {
             case ArkheState.Ousia:
+                GD.Print($"[OusiaPneumaCard] OnPlay -> OnOusiaEffect for card {base.Id?.Entry ?? "UNKNOWN"}");
                 await OnOusiaEffect(choiceContext, cardPlay);
                 break;
             case ArkheState.Pneuma:
+                GD.Print($"[OusiaPneumaCard] OnPlay -> OnPneumaEffect for card {base.Id?.Entry ?? "UNKNOWN"}");
                 await OnPneumaEffect(choiceContext, cardPlay);
                 break;
             default:
+                GD.Print($"[OusiaPneumaCard] OnPlay -> OnNoArkheEffect for card {base.Id?.Entry ?? "UNKNOWN"}");
                 await OnNoArkheEffect(choiceContext, cardPlay);
                 break;
         }
@@ -402,6 +413,16 @@ public abstract class OusiaPneumaCard(
         await base.AfterPowerAmountChanged(choiceContext, power, amount, applier, cardSource);
         
         if (power is OusiaPower || power is PneumaPower)
+        {
+            UpdateArkheState();
+        }
+    }
+
+    public override async Task AfterCardDrawn(PlayerChoiceContext choiceContext, CardModel card, bool fromHandDraw)
+    {
+        await base.AfterCardDrawn(choiceContext, card, fromHandDraw);
+
+        if (card == this)
         {
             UpdateArkheState();
         }

@@ -106,5 +106,5 @@
   "FURINA_CARD_MISE_EN_SCENE.title": "场面调度",
   "FURINA_CARD_MISE_EN_SCENE.description": "{ArkheState:choose(Ousia|Pneuma|None):从你的[purple]抽牌堆[/purple]中选择1张牌加入手牌。|从你的[color=#FFFF00]弃牌堆[/color]中选择1张牌加入手牌。|从你的[purple]抽牌堆[/purple][color=#FFFF00]弃牌堆[/color]中选择1张牌加入手牌。}",
   "FURINA_CARD_BACKUP_DANCER.title": "伴舞",
-  "FURINA_CARD_BACKUP_DANCER.description": "获得{Block}点[gold]格挡[/gold]，{Repeat:diff()}次。\n当你升级另一张牌时，此牌也会升级。"
+  "FURINA_CARD_BACKUP_DANCER.description": "可无限升级。\n获得{Block}点[gold]格挡[/gold]{Repeat:diff()}次。你升级另一张牌时，此牌也会升级。"
 }

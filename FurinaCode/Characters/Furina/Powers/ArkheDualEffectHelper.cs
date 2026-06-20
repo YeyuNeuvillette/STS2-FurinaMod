@@ -39,15 +39,17 @@ public static class ArkheDualEffectHelper
             if (card is OusiaPneumaCard ousiaPneumaCard)
             {
                 ousiaPneumaCard.ForceNoneState = forceNone;
+                ousiaPneumaCard.UpdateArkheState();
             }
         }
     }
 
     public static void OnCardDrawn(Creature creature, CardModel card)
     {
-        if (card is OusiaPneumaCard && HasActiveProvider(creature))
+        if (card is OusiaPneumaCard ousiaPneumaCard)
         {
-            ((OusiaPneumaCard)card).ForceNoneState = true;
+            ousiaPneumaCard.ForceNoneState = HasActiveProvider(creature);
+            ousiaPneumaCard.UpdateArkheState();
         }
     }
 

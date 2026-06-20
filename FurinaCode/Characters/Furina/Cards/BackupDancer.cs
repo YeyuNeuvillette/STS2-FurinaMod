@@ -65,10 +65,13 @@ public sealed class BackupDancer : BaseCard
     {
         foreach (var player in players)
         {
-            foreach (var card in player.Deck.Cards)
+            foreach (var pile in player.Piles)
             {
-                if (card is BackupDancer dancer)
-                    dancer.TrySubscribe();
+                foreach (var card in pile.Cards)
+                {
+                    if (card is BackupDancer dancer)
+                        dancer.TrySubscribe();
+                }
             }
         }
     }
@@ -81,7 +84,7 @@ public sealed class BackupDancer : BaseCard
         if (!IsUpgradable)
             return;
 
-        if (CombatManager.Instance == null || CombatManager.Instance.IsOverOrEnding)
+        if (IsInCombat != upgradedCard.IsInCombat)
             return;
 
         CardUpgradeEventBus.PropagateUpgrade(() => CardCmd.Upgrade(this));
