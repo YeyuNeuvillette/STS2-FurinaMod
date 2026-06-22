@@ -108,5 +108,7 @@
   "FURINA_CARD_BACKUP_DANCER.title": "Backup Dancer",
   "FURINA_CARD_BACKUP_DANCER.description": "Can be upgraded infinitely.\n Gain {Block} [gold]Block[/gold], {Repeat:diff()} times.When you upgrade another card, this card also upgrades.",
   "FURINA_CARD_BLANK_SPACE.title": "Blank Space",
-  "FURINA_CARD_BLANK_SPACE.description": "Gain {Block:diff()} [gold]Block[/gold]. You will not receive card rewards at the end of combat."
+  "FURINA_CARD_BLANK_SPACE.description": "Gain {Block:diff()} [gold]Block[/gold]. You will not receive card rewards at the end of combat.",
+  "FURINA_CARD_ARRANGE_SCHEDULE.title": "Arrange Schedule",
+  "FURINA_CARD_ARRANGE_SCHEDULE.description": "{ArkheState:choose(Ousia|Pneuma|None):[purple]Next turn[/purple], gain {Block:diff()} [gold]Block[/gold].|[color=#FFFF00]This turn[/color], gain {Block:diff()} [gold]Block[/gold].|[purple]This turn[/purple], gain {Block:diff()} [gold]Block[/gold].\n[color=#FFFF00]Next turn[/color], gain {Block:diff()} [gold]Block[/gold].}"
 }

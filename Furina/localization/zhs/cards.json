@@ -108,5 +108,7 @@
   "FURINA_CARD_BACKUP_DANCER.title": "伴舞",
   "FURINA_CARD_BACKUP_DANCER.description": "可无限升级。\n获得{Block}点[gold]格挡[/gold]{Repeat:diff()}次。你升级另一张牌时，此牌也会升级。",
   "FURINA_CARD_BLANK_SPACE.title": "留白",
-  "FURINA_CARD_BLANK_SPACE.description": "获得{Block:diff()}点[gold]格挡[/gold]。战斗结束后，你不会获得卡牌奖励。"
+  "FURINA_CARD_BLANK_SPACE.description": "获得{Block:diff()}点[gold]格挡[/gold]。战斗结束后，你不会获得卡牌奖励。",
+  "FURINA_CARD_ARRANGE_SCHEDULE.title": "安排档期",
+  "FURINA_CARD_ARRANGE_SCHEDULE.description": "{ArkheState:choose(Ousia|Pneuma|None):[purple]下回合[/purple]获得{Block:diff()}点[gold]格挡[/gold]。|[color=#FFFF00]本回合[/color]获得{Block:diff()}点[gold]格挡[/gold]。|[purple]下回合[/purple][color=#FFFF00]本回合[/color]获得{Block:diff()}点[gold]格挡[/gold]。}"
 }
