@@ -16,7 +16,7 @@
   "FURINA_CARD_INVITE_SINGER_OF_MANY_WATERS.title": "Invite Singer of Many Waters",
   "FURINA_CARD_INVITE_SINGER_OF_MANY_WATERS.description": "[gold]Invite[/gold] Singer of Many Waters.",
   "FURINA_CARD_ANNOUNCER.title": "Announcer",
-  "FURINA_CARD_ANNOUNCER.description": "{ArkheState:choose(Ousia|Pneuma|None):The next [purple]Attack[/purple] card you play costs {CostReduction:diff()} less Energy. Draw {Cards:diff()} card.|The next [color=#FFFF00]Skill[/color] card you play costs {CostReduction:diff()} less Energy. Draw {Cards:diff()} card.|The next [purple]Attack[/purple][color=#FFFF00]Skill[/color] card you play costs {CostReduction:diff()} less Energy. Draw {Cards:diff()} card.}",
+  "FURINA_CARD_ANNOUNCER.description": "{ArkheState:choose(Ousia|Pneuma|None):The next [purple]Attack[/purple] card you play costs {CostReduction:diff()} less Energy. \nDraw {Cards:diff()} card.|The next [color=#FFFF00]Skill[/color] card you play costs {CostReduction:diff()} less Energy. \nDraw {Cards:diff()} card.|The next [purple]Attack[/purple][color=#FFFF00]Skill[/color] card you play costs {CostReduction:diff()} less Energy. \nDraw {Cards:diff()} card.}",
   "FURINA_CARD_IMPROMPTU.title": "Impromptu",
   "FURINA_CARD_IMPROMPTU.description": "{ArkheState:choose(Ousia|Pneuma|None):[purple]Deal {Damage:diff()} damage.[/purple]|[color=#FFFF00]Gain {Block:diff()} [gold]Block[/gold].[/color]|[purple]Deal {Damage:diff()} damage.[/purple]}",
   "FURINA_CARD_RONDO.title": "Rondo",

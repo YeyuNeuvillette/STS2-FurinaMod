@@ -19,7 +19,7 @@ namespace Furina.Characters.Furina.Cards;
 [RegisterCard(typeof(FurinaCardPool))]
 public sealed class AriaStrike : OusiaPneumaCard
 {
-    protected override IEnumerable<DynamicVar> CanonicalVars => new List<DynamicVar> { new DamageVar(6m, ValueProp.Move) };
+    protected override IEnumerable<DynamicVar> CanonicalVars => new List<DynamicVar> { new DamageVar(8m, ValueProp.Move) };
 
     public AriaStrike()
         : base(1, CardType.Attack, CardRarity.Common, TargetType.AnyEnemy)
@@ -93,6 +93,6 @@ public sealed class AriaStrike : OusiaPneumaCard
 
     protected override void OnUpgrade()
     {
-        DynamicVars.Damage.UpgradeValueBy(3m);
+        DynamicVars.Damage.UpgradeValueBy(2m);
     }
 }
