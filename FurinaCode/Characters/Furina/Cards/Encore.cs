@@ -50,8 +50,7 @@ public sealed class Encore : FurinaCard
 
     protected override void OnUpgrade()
     {
-        DynamicVars.Damage.UpgradeValueBy(2m);
-        DynamicVars.Cards.UpgradeValueBy(1m);
+        DynamicVars.Damage.UpgradeValueBy(3m);
     }
 
     private bool HasPlayedEnoughOtherCards()

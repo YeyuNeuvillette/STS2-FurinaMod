@@ -47,7 +47,7 @@ public sealed class AnnouncerOusiaPower : FurinaPower
         {
             return false;
         }
-        modifiedCost = originalCost - 1m;
+        modifiedCost = originalCost - Amount;
         return true;
     }
 

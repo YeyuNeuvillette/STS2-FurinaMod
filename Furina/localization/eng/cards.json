@@ -16,7 +16,7 @@
   "FURINA_CARD_INVITE_SINGER_OF_MANY_WATERS.title": "Invite Singer of Many Waters",
   "FURINA_CARD_INVITE_SINGER_OF_MANY_WATERS.description": "[gold]Invite[/gold] Singer of Many Waters.",
   "FURINA_CARD_ANNOUNCER.title": "Announcer",
-  "FURINA_CARD_ANNOUNCER.description": "{ArkheState:choose(Ousia|Pneuma|None):The next [purple]Attack[/purple] card you play costs 1 less Energy.|The next [color=#FFFF00]Skill[/color] card you play costs 1 less Energy.|The next [purple]Attack[/purple][color=#FFFF00]Skill[/color] card you play costs 1 less Energy.}",
+  "FURINA_CARD_ANNOUNCER.description": "{ArkheState:choose(Ousia|Pneuma|None):The next [purple]Attack[/purple] card you play costs {CostReduction:diff()} less Energy. Draw {Cards:diff()} card.|The next [color=#FFFF00]Skill[/color] card you play costs {CostReduction:diff()} less Energy. Draw {Cards:diff()} card.|The next [purple]Attack[/purple][color=#FFFF00]Skill[/color] card you play costs {CostReduction:diff()} less Energy. Draw {Cards:diff()} card.}",
   "FURINA_CARD_IMPROMPTU.title": "Impromptu",
   "FURINA_CARD_IMPROMPTU.description": "{ArkheState:choose(Ousia|Pneuma|None):[purple]Deal {Damage:diff()} damage.[/purple]|[color=#FFFF00]Gain {Block:diff()} [gold]Block[/gold].[/color]|[purple]Deal {Damage:diff()} damage.[/purple]}",
   "FURINA_CARD_RONDO.title": "Rondo",
@@ -110,5 +110,7 @@
   "FURINA_CARD_BLANK_SPACE.title": "Blank Space",
   "FURINA_CARD_BLANK_SPACE.description": "Gain {Block:diff()} [gold]Block[/gold]. You will not receive card rewards at the end of combat.",
   "FURINA_CARD_ARRANGE_SCHEDULE.title": "Arrange Schedule",
-  "FURINA_CARD_ARRANGE_SCHEDULE.description": "{ArkheState:choose(Ousia|Pneuma|None):[purple]Next turn[/purple], gain {Block:diff()} [gold]Block[/gold].|[color=#FFFF00]This turn[/color], gain {Block:diff()} [gold]Block[/gold].|[purple]This turn[/purple], gain {Block:diff()} [gold]Block[/gold].\n[color=#FFFF00]Next turn[/color], gain {Block:diff()} [gold]Block[/gold].}"
+  "FURINA_CARD_ARRANGE_SCHEDULE.description": "{ArkheState:choose(Ousia|Pneuma|None):[purple]Next turn[/purple], gain {Block:diff()} [gold]Block[/gold].|[color=#FFFF00]This turn[/color], gain {Block:diff()} [gold]Block[/gold].|[purple]This turn[/purple], gain {Block:diff()} [gold]Block[/gold].\n[color=#FFFF00]Next turn[/color], gain {Block:diff()} [gold]Block[/gold].}",
+  "FURINA_CARD_DREAM_WITHIN_A_DREAM.title": "Dream Within a Dream",
+  "FURINA_CARD_DREAM_WITHIN_A_DREAM.description": "Gain {Energy:energyIcons()}."
 }
