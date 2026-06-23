@@ -38,7 +38,9 @@ public sealed class Announcer : OusiaPneumaCard
         }
 
         GD.Print("[Announcer] OnOusiaEffect applying AnnouncerOusiaPower");
-        await PowerCmd.Apply<AnnouncerOusiaPower>(choiceContext, Owner.Creature, DynamicVars["CostReduction"].BaseValue, Owner.Creature, this);
+        var power = await PowerCmd.Apply<AnnouncerOusiaPower>(choiceContext, Owner.Creature, 1m, Owner.Creature, this);
+        if (power != null)
+            power.CostReduction = DynamicVars["CostReduction"].BaseValue;
         await CardPileCmd.Draw(choiceContext, DynamicVars.Cards.BaseValue, Owner);
         GD.Print("[Announcer] OnOusiaEffect done");
     }
@@ -52,7 +54,9 @@ public sealed class Announcer : OusiaPneumaCard
         }
 
         GD.Print("[Announcer] OnPneumaEffect applying AnnouncerPneumaPower");
-        await PowerCmd.Apply<AnnouncerPneumaPower>(choiceContext, Owner.Creature, DynamicVars["CostReduction"].BaseValue, Owner.Creature, this);
+        var power = await PowerCmd.Apply<AnnouncerPneumaPower>(choiceContext, Owner.Creature, 1m, Owner.Creature, this);
+        if (power != null)
+            power.CostReduction = DynamicVars["CostReduction"].BaseValue;
         await CardPileCmd.Draw(choiceContext, DynamicVars.Cards.BaseValue, Owner);
         GD.Print("[Announcer] OnPneumaEffect done");
     }
@@ -66,8 +70,12 @@ public sealed class Announcer : OusiaPneumaCard
         }
 
         GD.Print("[Announcer] OnChorusEffect applying both powers");
-        await PowerCmd.Apply<AnnouncerOusiaPower>(choiceContext, Owner.Creature, DynamicVars["CostReduction"].BaseValue, Owner.Creature, this);
-        await PowerCmd.Apply<AnnouncerPneumaPower>(choiceContext, Owner.Creature, DynamicVars["CostReduction"].BaseValue, Owner.Creature, this);
+        var ousiaPower = await PowerCmd.Apply<AnnouncerOusiaPower>(choiceContext, Owner.Creature, 1m, Owner.Creature, this);
+        if (ousiaPower != null)
+            ousiaPower.CostReduction = DynamicVars["CostReduction"].BaseValue;
+        var pneumaPower = await PowerCmd.Apply<AnnouncerPneumaPower>(choiceContext, Owner.Creature, 1m, Owner.Creature, this);
+        if (pneumaPower != null)
+            pneumaPower.CostReduction = DynamicVars["CostReduction"].BaseValue;
         await CardPileCmd.Draw(choiceContext, DynamicVars.Cards.BaseValue, Owner);
         GD.Print("[Announcer] OnChorusEffect done");
     }

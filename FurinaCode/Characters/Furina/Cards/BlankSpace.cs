@@ -30,11 +30,11 @@ public sealed class BlankSpace : BaseCard
     protected override IEnumerable<DynamicVar> CanonicalVars =>
         new List<DynamicVar>
         {
-            new BlockVar(30m, ValueProp.Move)
+            new BlockVar(25m, ValueProp.Move)
         };
 
     public override IEnumerable<CardKeyword> CanonicalKeywords =>
-        new List<CardKeyword> { CardKeyword.Retain, CardKeyword.Exhaust };
+        new List<CardKeyword> { CardKeyword.Retain };
 
     public BlankSpace()
         : base(1, CardType.Skill, CardRarity.Rare, TargetType.Self)

@@ -19,6 +19,8 @@ public sealed class AnnouncerPneumaPower : FurinaPower
     public override PowerStackType StackType => PowerStackType.Counter;
     protected override bool IsVisibleInternal => false;
 
+    public decimal CostReduction { get; set; } = 1m;
+
     public override bool TryModifyEnergyCostInCombatLate(CardModel card, decimal originalCost, out decimal modifiedCost)
     {
         modifiedCost = originalCost;
@@ -45,7 +47,7 @@ public sealed class AnnouncerPneumaPower : FurinaPower
         {
             return false;
         }
-        modifiedCost = originalCost - Amount;
+        modifiedCost = originalCost - CostReduction;
         return true;
     }
 

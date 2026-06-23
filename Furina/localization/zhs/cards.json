@@ -16,7 +16,7 @@
   "FURINA_CARD_INVITE_SINGER_OF_MANY_WATERS.title": "众水的歌者",
   "FURINA_CARD_INVITE_SINGER_OF_MANY_WATERS.description": "[gold]邀请[/gold]众水的歌者。",
   "FURINA_CARD_ANNOUNCER.title": "报幕",
-  "FURINA_CARD_ANNOUNCER.description": "{ArkheState:choose(Ousia|Pneuma|None):本回合中，你使用的下一张[purple]攻击[/purple]牌耗能-{CostReduction:diff()}。抽{Cards:diff()}张牌。|本回合中，你使用的下一张[color=#FFFF00]技能[/color]牌耗能-{CostReduction:diff()}。抽{Cards:diff()}张牌。|本回合中，你使用的下一张[purple]攻击[/purple][color=#FFFF00]技能[/color]牌耗能-{CostReduction:diff()}。抽{Cards:diff()}张牌。}",
+  "FURINA_CARD_ANNOUNCER.description": "{ArkheState:choose(Ousia|Pneuma|None):本回合中，你使用的下一张[purple]攻击[/purple]牌耗能-{CostReduction:diff()}。\n抽{Cards:diff()}张牌。|本回合中，你使用的下一张[color=#FFFF00]技能[/color]牌耗能-{CostReduction:diff()}。\n抽{Cards:diff()}张牌。|本回合中，你使用的下一张[purple]攻击[/purple][color=#FFFF00]技能[/color]牌耗能-{CostReduction:diff()}。\n抽{Cards:diff()}张牌。}",
   "FURINA_CARD_IMPROMPTU.title": "即兴",
   "FURINA_CARD_IMPROMPTU.description": "{ArkheState:choose(Ousia|Pneuma|None):[purple]造成{Damage:diff()}点伤害。[/purple]|[color=#FFFF00]获得{Block:diff()}点[gold]格挡[/gold]。[/color]|[purple]造成{Damage:diff()}点伤害。[/purple]\n[color=#FFFF00]获得{Block:diff()}点[gold]格挡[/gold]。[/color]}",
   "FURINA_CARD_RONDO.title": "圆舞",
