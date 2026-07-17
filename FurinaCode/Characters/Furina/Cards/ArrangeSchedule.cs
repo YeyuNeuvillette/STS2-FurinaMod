@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using MegaCrit.Sts2.Core.Commands;
 using MegaCrit.Sts2.Core.Entities.Cards;
 using MegaCrit.Sts2.Core.GameActions.Multiplayer;
+using MegaCrit.Sts2.Core.Hooks;
 using MegaCrit.Sts2.Core.Localization.DynamicVars;
 using MegaCrit.Sts2.Core.Models.Powers;
 using MegaCrit.Sts2.Core.ValueProps;
@@ -30,7 +31,9 @@ public sealed class ArrangeSchedule : OusiaPneumaCard
         if (Owner?.Creature == null)
             return;
 
-        await PowerCmd.Apply<BlockNextTurnPower>(choiceContext, Owner.Creature, DynamicVars.Block.BaseValue, Owner.Creature, this);
+        var blockVar = DynamicVars.Block;
+        var modifiedBlock = Hook.ModifyBlock(CombatState!, Owner.Creature, blockVar.BaseValue, blockVar.Props, this, cardPlay, out _);
+        await PowerCmd.Apply<BlockNextTurnPower>(choiceContext, Owner.Creature, modifiedBlock, Owner.Creature, this);
     }
 
     protected override async Task OnPneumaEffect(PlayerChoiceContext choiceContext, CardPlay cardPlay)
@@ -38,7 +41,7 @@ public sealed class ArrangeSchedule : OusiaPneumaCard
         if (Owner?.Creature == null)
             return;
 
-        await CreatureCmd.GainBlock(Owner.Creature, DynamicVars.Block.BaseValue, ValueProp.Move, cardPlay);
+        await CreatureCmd.GainBlock(Owner.Creature, DynamicVars.Block, cardPlay);
     }
 
     protected override async Task OnNoArkheEffect(PlayerChoiceContext choiceContext, CardPlay cardPlay)
@@ -46,8 +49,8 @@ public sealed class ArrangeSchedule : OusiaPneumaCard
         if (Owner?.Creature == null)
             return;
 
-        await CreatureCmd.GainBlock(Owner.Creature, DynamicVars.Block.BaseValue, ValueProp.Move, cardPlay);
-        await PowerCmd.Apply<BlockNextTurnPower>(choiceContext, Owner.Creature, DynamicVars.Block.BaseValue, Owner.Creature, this);
+        var actualBlock = await CreatureCmd.GainBlock(Owner.Creature, DynamicVars.Block, cardPlay);
+        await PowerCmd.Apply<BlockNextTurnPower>(choiceContext, Owner.Creature, actualBlock, Owner.Creature, this);
     }
 
     protected override void OnUpgrade()

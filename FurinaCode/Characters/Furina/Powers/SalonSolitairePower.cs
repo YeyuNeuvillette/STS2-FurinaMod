@@ -3,6 +3,7 @@ using MegaCrit.Sts2.Core.Entities.Cards;
 using MegaCrit.Sts2.Core.Entities.Powers;
 using MegaCrit.Sts2.Core.Entities.Players;
 using MegaCrit.Sts2.Core.GameActions.Multiplayer;
+using MegaCrit.Sts2.Core.Entities.Creatures;
 using MegaCrit.Sts2.Core.HoverTips;
 using STS2RitsuLib.Interop.AutoRegistration;
 using MinionLib.Powers;
@@ -21,5 +22,12 @@ public sealed class SalonSolitairePower : FurinaPower
     {
         await base.AfterPlayerTurnStart(choiceContext, player);
         Amount = 0;
+    }
+
+    public override async Task AfterDeath(PlayerChoiceContext choiceContext, Creature creature, bool wasRemovalPrevented, float deathAnimLength)
+    {
+        await base.AfterDeath(choiceContext, creature, wasRemovalPrevented, deathAnimLength);
+        if (!wasRemovalPrevented && creature == Owner)
+            InvitationManager.OnMinionDeath(creature);
     }
 }

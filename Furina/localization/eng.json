@@ -1,0 +1,11 @@
+{
+  "furina.settings.page.title": "Furina",
+  "furina.settings.section.hotkeys.title": "Salon Member Hotkeys",
+  "furina.settings.section.hotkeys.description": "Customize hotkeys for triggering salon member actions during combat.",
+  "furina.settings.hotkey.chevalmarin.label": "Surintendante Chevalmarin",
+  "furina.settings.hotkey.chevalmarin.description": "Hotkey for Chevalmarin's Pure Water Note action.",
+  "furina.settings.hotkey.usher.label": "Gentilhomme Usher",
+  "furina.settings.hotkey.usher.description": "Hotkey for Usher's Hydro Barrage action.",
+  "furina.settings.hotkey.crabaletta.label": "Mademoiselle Crabaletta",
+  "furina.settings.hotkey.crabaletta.description": "Hotkey for Crabaletta's Crab Shield action."
+}

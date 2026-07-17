@@ -42,7 +42,7 @@ public sealed class AllEyesOnMe : FurinaCard
             await PlayerCmd.GainEnergy(DynamicVars.Energy.IntValue, Owner);
         }
 
-        await DamageCmd.Attack(damage).FromCard(this).Targeting(target)
+        await DamageCmd.Attack(damage).FromCard(this, cardPlay).Targeting(target)
             .WithHitFx("vfx/vfx_attack_slash")
             .Execute(choiceContext);
     }

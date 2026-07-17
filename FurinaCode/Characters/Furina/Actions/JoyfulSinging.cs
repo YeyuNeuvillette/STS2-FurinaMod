@@ -55,12 +55,16 @@ public sealed class JoyfulSinging : ModActionTemplate
 
     public override async Task AfterDeath(PlayerChoiceContext choiceContext, Creature creature, bool wasRemovalPrevented, float deathAnimLength)
     {
+        await base.AfterDeath(choiceContext, creature, wasRemovalPrevented, deathAnimLength);
         if (creature == Owner && Owner.PetOwner != null)
         {
             UpdateEnergy();
             var energyAmount = (int)base.DynamicVars[_energyKey].BaseValue;
             
             await PlayerCmd.GainEnergy(energyAmount, Owner.PetOwner);
+
+            if (!wasRemovalPrevented)
+                InvitationManager.OnMinionDeath(creature);
         }
     }
 }

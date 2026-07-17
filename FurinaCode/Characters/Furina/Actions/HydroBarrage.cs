@@ -84,6 +84,6 @@ public sealed class HydroBarrage : ModActionTemplate
         var actor = Owner;
         
         await MinionAnimCmd.PlayBumpAttackAsync(actor, target,
-            () => CreatureCmd.Damage(choiceContext, target, damage, ValueProp.Move, actor, null));
+            () => CreatureCmd.Damage(choiceContext, target, damage, ValueProp.Move, actor, null, null));
     }
 }

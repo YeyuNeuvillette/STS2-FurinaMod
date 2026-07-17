@@ -48,19 +48,10 @@ public static class MinionRightClickPatch
         var me = LocalContext.GetMe(creature.CombatState);
         if (me == null) return;
 
-        var salonSolitairePower = creature.GetPower<Powers.SalonSolitairePower>();
-        if (salonSolitairePower == null) return;
-
-        if (creature.Monster is SingerOfManyWaters)
-            return;
+        if (!MinionStorage.IsFurinaMinion(creature)) return;
 
         var player = me;
         if (player == null) return;
-
-        if (MinionStorage.IsSalonSolitaireUsed(player))
-            return;
-
-        MinionStorage.MarkSalonSolitaireUsed(player);
 
         RunManager.Instance.ActionQueueSynchronizer.RequestEnqueue(new SalonSolitaireGameAction(player, creature));
         creatureNode.GetViewport().SetInputAsHandled();

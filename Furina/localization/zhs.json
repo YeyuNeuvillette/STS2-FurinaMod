@@ -1,0 +1,11 @@
+{
+  "furina.settings.page.title": "芙宁娜",
+  "furina.settings.section.hotkeys.title": "沙龙成员快捷键",
+  "furina.settings.section.hotkeys.description": "自定义战斗中触发沙龙成员行动的快捷键。",
+  "furina.settings.hotkey.chevalmarin.label": "海薇玛夫人",
+  "furina.settings.hotkey.chevalmarin.description": "海薇玛夫人的纯水音符行动快捷键。",
+  "furina.settings.hotkey.usher.label": "乌瑟勋爵",
+  "furina.settings.hotkey.usher.description": "乌瑟勋爵的水形连弹行动快捷键。",
+  "furina.settings.hotkey.crabaletta.label": "谢贝蕾妲小姐",
+  "furina.settings.hotkey.crabaletta.description": "谢贝蕾妲小姐的蟹钳掩护行动快捷键。"
+}

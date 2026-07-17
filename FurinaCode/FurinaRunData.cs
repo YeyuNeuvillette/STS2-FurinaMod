@@ -11,6 +11,7 @@ using MegaCrit.Sts2.Core.Entities.Powers;
 using MegaCrit.Sts2.Core.GameActions.Multiplayer;
 using MegaCrit.Sts2.Core.Models;
 using Furina.Characters.Furina.Minions;
+using Furina.Characters.Furina;
 using Furina.Characters.Furina.Actions;
 using Furina.Characters.Furina.Powers;
 using MinionLib.Commands;
@@ -189,6 +190,34 @@ public static class MinionStorage
     {
         var dictKey = (player.NetId, storageKey);
         return _storedMinions.TryGetValue(dictKey, out var list) && list.Count > 0;
+    }
+
+    public static void ReduceStoredInvitations(Player player, string storageKey, int amount)
+    {
+        if (amount <= 0 || !_storedMinions.TryGetValue((player.NetId, storageKey), out var minions))
+            return;
+
+        if (storageKey == InvitationManager.PneumaKey)
+        {
+            var singer = minions.FirstOrDefault(m => m.MinionType == typeof(SingerOfManyWaters));
+            if (singer == null)
+                return;
+
+            var contribution = singer.MaxHp < 3m ? 0 : 1 + (int)((singer.MaxHp - 3m) / 5m);
+            if (amount >= contribution)
+            {
+                minions.Remove(singer);
+                return;
+            }
+
+            singer.MaxHp -= amount * 5m;
+            singer.CurrentHp = Math.Min(singer.CurrentHp, singer.MaxHp);
+        }
+        else
+        {
+            // A singer carries every invitation, so its real death removes the full salon snapshot.
+            minions.Clear();
+        }
     }
 
     public static async Task RestoreMinions(PlayerChoiceContext choiceContext, Player player, CardModel? source, string storageKey)

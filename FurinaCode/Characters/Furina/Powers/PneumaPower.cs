@@ -17,7 +17,7 @@ namespace Furina.Characters.Furina.Powers;
 [RegisterPower]
 public sealed class PneumaPower : FurinaPower
 {
-    private const string StorageKey = "Pneuma";
+    private const string StorageKey = InvitationManager.PneumaKey;
 
     public override PowerType Type => PowerType.None;
     public override PowerStackType StackType => PowerStackType.None;
@@ -46,6 +46,7 @@ public sealed class PneumaPower : FurinaPower
                     try
                     {
                         Patches.SkipDeathAnimPatch.RegisterCreatureToSkipDeathAnim(pet);
+                        InvitationManager.RegisterStateSwitchRemoval(pet);
                         await CreatureCmd.Kill(pet);
                         GD.Print($"[PneumaPower] Pet killed successfully: {pet.Name}");
                     }
@@ -67,6 +68,9 @@ public sealed class PneumaPower : FurinaPower
         await base.AfterPowerAmountChanged(choiceContext, power, amount, applier, cardSource);
         
         GD.Print($"[PneumaPower] AfterPowerAmountChanged: power.Amount={power.Amount}, amount={amount}");
+
+        if (!ReferenceEquals(power, this))
+            return;
         
         if (power.Amount > 0 && amount > 0)
         {
@@ -83,6 +87,7 @@ public sealed class PneumaPower : FurinaPower
                     await MinionStorage.RestoreMinions(choiceContext, player, cardSource, StorageKey);
                     GD.Print("[PneumaPower] Minions restored");
                 }
+                await InvitationManager.FillMissingInvitations(choiceContext, player, cardSource, StorageKey);
             }
         }
     }

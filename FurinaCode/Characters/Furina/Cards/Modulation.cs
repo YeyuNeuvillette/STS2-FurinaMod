@@ -51,7 +51,7 @@ public sealed class Modulation : OusiaPneumaCard
         if (CombatState == null)
             return;
 
-        await DamageCmd.Attack(DynamicVars.Damage.BaseValue).FromCard(this)
+        await DamageCmd.Attack(DynamicVars.Damage.BaseValue).FromCard(this, cardPlay)
             .TargetingAllOpponents(CombatState)
             .WithHitFx("vfx/vfx_attack_slash")
             .Execute(choiceContext);
@@ -64,7 +64,7 @@ public sealed class Modulation : OusiaPneumaCard
         if (CombatState == null)
             return;
 
-        await DamageCmd.Attack(DynamicVars.Damage.BaseValue).FromCard(this)
+        await DamageCmd.Attack(DynamicVars.Damage.BaseValue).FromCard(this, cardPlay)
             .TargetingAllOpponents(CombatState)
             .WithHitCount(2)
             .WithHitFx("vfx/vfx_attack_slash")
@@ -84,7 +84,7 @@ public sealed class Modulation : OusiaPneumaCard
 
         await PowerCmd.Apply<VulnerablePower>(choiceContext, CombatState.HittableEnemies, DynamicVars.Vulnerable.BaseValue, Owner?.Creature, this);
 
-        await DamageCmd.Attack(DynamicVars.Damage.BaseValue).FromCard(this)
+        await DamageCmd.Attack(DynamicVars.Damage.BaseValue).FromCard(this, cardPlay)
             .TargetingAllOpponents(CombatState)
             .WithHitCount(2)
             .WithHitFx("vfx/vfx_attack_slash")

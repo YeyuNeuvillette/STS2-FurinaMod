@@ -20,7 +20,7 @@ namespace Furina.Characters.Furina.Powers;
 [RegisterPower]
 public sealed class OusiaPower : FurinaPower
 {
-    private const string StorageKey = "Ousia";
+    private const string StorageKey = InvitationManager.OusiaKey;
 
     public override PowerType Type => PowerType.None;
     public override PowerStackType StackType => PowerStackType.None;
@@ -49,6 +49,7 @@ public sealed class OusiaPower : FurinaPower
                     try
                     {
                         Patches.SkipDeathAnimPatch.RegisterCreatureToSkipDeathAnim(pet);
+                        InvitationManager.RegisterStateSwitchRemoval(pet);
                         await CreatureCmd.Kill(pet);
                         GD.Print($"[OusiaPower] Pet killed successfully: {pet.Name}");
                     }
@@ -70,6 +71,9 @@ public sealed class OusiaPower : FurinaPower
         await base.AfterPowerAmountChanged(choiceContext, power, amount, applier, cardSource);
         
         GD.Print($"[OusiaPower] AfterPowerAmountChanged: power.Amount={power.Amount}, amount={amount}");
+
+        if (!ReferenceEquals(power, this))
+            return;
         
         if (power.Amount > 0 && amount > 0)
         {
@@ -86,6 +90,7 @@ public sealed class OusiaPower : FurinaPower
                     await MinionStorage.RestoreMinions(choiceContext, player, cardSource, StorageKey);
                     GD.Print("[OusiaPower] Minions restored");
                 }
+                await InvitationManager.FillMissingInvitations(choiceContext, player, cardSource, StorageKey);
             }
         }
     }

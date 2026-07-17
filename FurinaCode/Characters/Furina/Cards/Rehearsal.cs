@@ -36,18 +36,18 @@ public sealed class Rehearsal : BaseCard
 
         GD.Print($"[Rehearsal] Selected card: {targetCard.Id.Entry}");
         
-        var currentCost = targetCard.EnergyCost.GetWithModifiers(CostModifiers.All);
-        GD.Print($"[Rehearsal] Current cost: {currentCost}");
+        var baseCost = targetCard.EnergyCost.GetWithModifiers(CostModifiers.None);
+        GD.Print($"[Rehearsal] Base cost (without global modifiers): {baseCost}");
         
-        var newCost = Math.Max(0, currentCost - 1);
+        var newCost = Math.Max(0, baseCost - 1);
         targetCard.EnergyCost.SetCustomBaseCost(newCost);
         GD.Print($"[Rehearsal] Card cost modified to: {newCost}");
     }
 
     protected override void OnUpgrade()
     {
-        var currentCost = EnergyCost.GetWithModifiers(CostModifiers.All);
-        var newCost = Math.Max(0, currentCost - 1);
+        var baseCost = EnergyCost.GetWithModifiers(CostModifiers.None);
+        var newCost = Math.Max(0, baseCost - 1);
         EnergyCost.SetCustomBaseCost(newCost);
     }
 }

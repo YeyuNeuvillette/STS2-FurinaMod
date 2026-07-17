@@ -35,11 +35,11 @@ public sealed class Rondo : BaseCard
         Creature leftEnemy = enemies.First();
         Creature rightEnemy = enemies.Last();
 
-        await DamageCmd.Attack(DynamicVars.Damage.BaseValue).FromCard(this).Targeting(leftEnemy)
+        await DamageCmd.Attack(DynamicVars.Damage.BaseValue).FromCard(this, cardPlay).Targeting(leftEnemy)
             .WithHitFx("vfx/vfx_attack_slash")
             .Execute(choiceContext);
 
-        await DamageCmd.Attack(DynamicVars.Damage.BaseValue).FromCard(this).Targeting(rightEnemy)
+        await DamageCmd.Attack(DynamicVars.Damage.BaseValue).FromCard(this, cardPlay).Targeting(rightEnemy)
             .WithHitFx("vfx/vfx_attack_slash")
             .Execute(choiceContext);
     }

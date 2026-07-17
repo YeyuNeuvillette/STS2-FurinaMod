@@ -24,6 +24,5 @@ public sealed class SingerOfManyWaters : MinionModel
             await CreatureCmd.SetMaxAndCurrentHp(owner.PlayerCombatState!.GetPet<SingerOfManyWaters>()!, maxHp);
 
         await PowerCmd.Apply<JoyfulSinging>(choiceContext, owner.PlayerCombatState!.GetPet<SingerOfManyWaters>()!, 1m, owner.Creature, options.Source);
-        await PowerCmd.Apply<MinionGuardianPower>(choiceContext, owner.PlayerCombatState!.GetPet<SingerOfManyWaters>()!, 1m, owner.Creature, options.Source);
     }
 }

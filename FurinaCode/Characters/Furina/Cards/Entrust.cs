@@ -47,13 +47,13 @@ public sealed class Entrust : OusiaPneumaCard
     {
     }
 
-    protected override PileType GetResultPileTypeForCardPlay()
+    protected override (PileType, CardPilePosition) GetResultPileTypeAndPositionForCardPlay()
     {
         if (CurrentArkheState is ArkheState.Pneuma or ArkheState.None)
         {
-            return PileType.Exhaust;
+            return (PileType.Exhaust, CardPilePosition.None);
         }
-        return base.GetResultPileTypeForCardPlay();
+        return base.GetResultPileTypeAndPositionForCardPlay();
     }
 
     protected override async Task OnOusiaEffect(PlayerChoiceContext choiceContext, CardPlay cardPlay)
@@ -85,7 +85,7 @@ public sealed class Entrust : OusiaPneumaCard
         if (Owner?.Creature == null)
             return;
 
-        await CreatureCmd.Damage(choiceContext, Owner.Creature, DynamicVars.HpLoss.BaseValue, ValueProp.Unblockable | ValueProp.Unpowered | ValueProp.Move, this);
+        await CreatureCmd.Damage(choiceContext, Owner.Creature, DynamicVars.HpLoss.BaseValue, ValueProp.Unblockable | ValueProp.Unpowered | ValueProp.Move, this, null);
     }
 
     public override async Task BeforeSideTurnEnd(PlayerChoiceContext choiceContext, CombatSide side, IEnumerable<Creature> participants)

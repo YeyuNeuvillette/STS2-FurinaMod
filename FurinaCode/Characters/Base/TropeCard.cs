@@ -39,25 +39,29 @@ public abstract class TropeCard : BaseCard
     {
     }
 
-    protected override PileType GetResultPileTypeForCardPlay()
+    protected override (PileType, CardPilePosition) GetResultPileTypeAndPositionForCardPlay()
     {
         var result = PileType.None;
+        var position = CardPilePosition.Top;
         
         if (IsDupe || Type == CardType.Power)
         {
             result = PileType.None;
+            position = CardPilePosition.Top;
         }
         else if (_isPlayingFromScriptPile)
         {
             result = PileType.Discard;
+            position = CardPilePosition.Bottom;
         }
         else
         {
             result = ScriptPileType;
+            position = CardPilePosition.Top;
         }
         
-        GD.Print($"[TropeCard] GetResultPileTypeForCardPlay for {Id.Entry}: {result}, _isPlayingFromScriptPile: {_isPlayingFromScriptPile}");
-        return result;
+        GD.Print($"[TropeCard] GetResultPileTypeAndPositionForCardPlay for {Id.Entry}: result={result}, position={position}, _isPlayingFromScriptPile: {_isPlayingFromScriptPile}");
+        return (result, position);
     }
 
     private async Task CheckAndGenerateScript(PlayerChoiceContext choiceContext)

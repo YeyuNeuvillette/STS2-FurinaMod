@@ -51,20 +51,13 @@ public abstract class InviteCard(
 
     protected async Task HandleOusiaState(PlayerChoiceContext choiceContext)
     {
-        if (Owner?.Creature == null)
-            return;
+        await HandleOusiaState(choiceContext, SelectMinionType(choiceContext));
+    }
 
-        var minionType = SelectMinionType(choiceContext);
-        var existingMinion = Owner.PlayerCombatState?.Pets.FirstOrDefault(p => p.Monster?.GetType() == minionType);
-
-        if (existingMinion != null)
-        {
-            await EnhanceExistingMinion(choiceContext, existingMinion, minionType);
-        }
-        else
-        {
-            await SummonMinion(choiceContext, minionType);
-        }
+    protected async Task HandleOusiaState(PlayerChoiceContext choiceContext, Type minionType)
+    {
+        if (Owner != null)
+            await InvitationManager.InviteOusia(choiceContext, Owner, this, minionType);
     }
 
     protected async Task HandlePneumaState(PlayerChoiceContext choiceContext)
@@ -72,19 +65,7 @@ public abstract class InviteCard(
         if (Owner?.Creature == null)
             return;
 
-        var existingSinger = Owner.PlayerCombatState?.GetPet<SingerOfManyWaters>();
-
-        if (existingSinger != null)
-        {
-            await EnhanceSingerOfManyWaters(choiceContext, existingSinger);
-        }
-        else
-        {
-            await MinionCmd.AddMinion<SingerOfManyWaters>(choiceContext, Owner, new MinionSummonOptions(
-                MaxHp: 3m,
-                Source: this,
-                Position: MinionPosition.Front));
-        }
+        await InvitationManager.InvitePneuma(choiceContext, Owner, this);
     }
 
     protected async Task SummonMinion(PlayerChoiceContext choiceContext, Type minionType)

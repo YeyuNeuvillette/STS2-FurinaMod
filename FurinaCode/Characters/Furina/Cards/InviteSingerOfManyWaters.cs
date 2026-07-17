@@ -35,42 +35,14 @@ public sealed class InviteSingerOfManyWaters : InviteCard, KnowledgeDemon.IChoos
 
     public async Task OnChosen()
     {
-        if (Owner?.Creature == null)
-            return;
-
-        var existingSinger = Owner.PlayerCombatState?.GetPet<SingerOfManyWaters>();
-
-        if (existingSinger != null)
-        {
-            await EnhanceSingerOfManyWaters(new ThrowingPlayerChoiceContext(), existingSinger);
-        }
-        else
-        {
-            await MinionCmd.AddMinion<SingerOfManyWaters>(new ThrowingPlayerChoiceContext(), Owner, new MinionSummonOptions(
-                MaxHp: 3m,
-                Source: this,
-                Position: MinionPosition.Front));
-        }
+        if (Owner != null)
+            await InvitationManager.InvitePneuma(new ThrowingPlayerChoiceContext(), Owner, this);
     }
 
     protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay cardPlay)
     {
-        if (Owner?.Creature == null)
-            return;
-
-        var existingSinger = Owner.PlayerCombatState?.GetPet<SingerOfManyWaters>();
-
-        if (existingSinger != null)
-        {
-            await EnhanceSingerOfManyWaters(choiceContext, existingSinger);
-        }
-        else
-        {
-            await MinionCmd.AddMinion<SingerOfManyWaters>(choiceContext, Owner, new MinionSummonOptions(
-                MaxHp: 3m,
-                Source: this,
-                Position: MinionPosition.Front));
-        }
+        if (Owner != null)
+            await InvitationManager.InvitePneuma(choiceContext, Owner, this);
     }
 
     private new async Task EnhanceSingerOfManyWaters(PlayerChoiceContext choiceContext, Creature singer)

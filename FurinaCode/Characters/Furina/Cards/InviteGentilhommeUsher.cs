@@ -35,42 +35,14 @@ public sealed class InviteGentilhommeUsher : InviteCard, KnowledgeDemon.IChoosab
 
     public async Task OnChosen()
     {
-        if (Owner?.Creature == null)
-            return;
-
-        var existingMinion = Owner.PlayerCombatState?.Pets.FirstOrDefault(p => p.Monster?.GetType() == typeof(GentilhommeUsher));
-
-        if (existingMinion != null)
-        {
-            await EnhanceExistingMinion(new ThrowingPlayerChoiceContext(), existingMinion, typeof(GentilhommeUsher));
-        }
-        else
-        {
-            await MinionCmd.AddMinion<GentilhommeUsher>(new ThrowingPlayerChoiceContext(), Owner, new MinionSummonOptions(
-                MaxHp: 3m,
-                Source: this,
-                Position: MinionPosition.Front));
-        }
+        if (Owner != null)
+            await InvitationManager.InviteOusia(new ThrowingPlayerChoiceContext(), Owner, this, typeof(GentilhommeUsher));
     }
 
     protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay cardPlay)
     {
-        if (Owner?.Creature == null)
-            return;
-
-        var existingMinion = Owner.PlayerCombatState?.Pets.FirstOrDefault(p => p.Monster?.GetType() == typeof(GentilhommeUsher));
-
-        if (existingMinion != null)
-        {
-            await EnhanceExistingMinion(choiceContext, existingMinion);
-        }
-        else
-        {
-            await MinionCmd.AddMinion<GentilhommeUsher>(choiceContext, Owner, new MinionSummonOptions(
-                MaxHp: 3m,
-                Source: this,
-                Position: MinionPosition.Front));
-        }
+        if (Owner != null)
+            await InvitationManager.InviteOusia(choiceContext, Owner, this, typeof(GentilhommeUsher));
     }
 
     private async Task EnhanceExistingMinion(PlayerChoiceContext choiceContext, Creature existingMinion)

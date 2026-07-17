@@ -11,6 +11,7 @@ using STS2RitsuLib.Keywords;
 using MinionLib.RightClick;
 using Furina.Characters.Base;
 using Furina.Characters.Furina.Cards;
+using Furina.Characters.Furina;
 using Furina.Characters.Furina.Patches;
 using Furina.Characters.Furina.Powers;
 using Furina.Characters.Furina.RightClick;
@@ -45,7 +46,16 @@ public partial class MainFile : Node
         using (RitsuLibFramework.BeginModDataRegistration(ModId))
         {
             FurinaRunData.Register();
+            FurinaHotkeyService.RegisterData();
         }
+
+        FurinaHotkeyService.RegisterSettingsPage();
+
+        RitsuLibFramework.SubscribeLifecycle<DeferredInitializationCompletedEvent>(_ =>
+        {
+            MainFile.Logger.Info("[FurinaHotkey] DeferredInitializationCompletedEvent received, initializing hotkeys...");
+            FurinaHotkeyService.InitializeHotkeys();
+        });
 
         RegisterKeywords();
         RegisterRightClickHandlers();
@@ -57,6 +67,7 @@ public partial class MainFile : Node
         {
             MovementCard.ResetCombatState();
             MinionStorage.ClearAll();
+            InvitationManager.ClearAll();
             if (evt.CombatState is CombatState combatState)
                 BackupDancer.SubscribeAllForCombat(combatState.Players);
         });

@@ -65,16 +65,7 @@ public sealed class EveryoneOut : InviteCard
 
             foreach (var minionType in salonMembers)
             {
-                var existingMinion = Owner.PlayerCombatState?.Pets.FirstOrDefault(p => p.Monster?.GetType() == minionType);
-
-                if (existingMinion != null)
-                {
-                    await EnhanceExistingMinion(choiceContext, existingMinion, minionType);
-                }
-                else
-                {
-                    await SummonMinion(choiceContext, minionType);
-                }
+                await HandleOusiaState(choiceContext, minionType);
             }
         }
 
