@@ -16,9 +16,12 @@ namespace Furina.Characters.Furina.Cards;
 [RegisterCard(typeof(FurinaCardPool))]
 public sealed class Audition : FurinaCard
 {
+    private const string _drawKey = "Draw";
+
     protected override IEnumerable<DynamicVar> CanonicalVars => new List<DynamicVar> 
     { 
-        new DamageVar(7m, ValueProp.Move)
+        new DamageVar(7m, ValueProp.Move),
+        new IntVar(_drawKey, 1m)
     };
 
     public Audition()
@@ -39,7 +42,8 @@ public sealed class Audition : FurinaCard
             .WithHitFx("vfx/vfx_attack_slash")
             .Execute(choiceContext);
 
-        var drawnCards = await CardPileCmd.Draw(choiceContext, 1m, Owner);
+        var drawCount = (int)DynamicVars[_drawKey].BaseValue;
+        var drawnCards = await CardPileCmd.Draw(choiceContext, drawCount, Owner);
         
         foreach (var card in drawnCards)
         {
@@ -49,6 +53,6 @@ public sealed class Audition : FurinaCard
 
     protected override void OnUpgrade()
     {
-        DynamicVars.Damage.UpgradeValueBy(3m);
+        DynamicVars[_drawKey].UpgradeValueBy(1m);
     }
 }

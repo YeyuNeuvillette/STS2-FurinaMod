@@ -28,8 +28,7 @@ public sealed class InviteGuest : InviteCard
 
     protected override Type SelectMinionType(PlayerChoiceContext choiceContext)
     {
-        var minions = new[] { typeof(GentilhommeUsher), typeof(MademoiselleCrabaletta), typeof(SurintendanteChevalmarin) };
-        return Owner.RunState.Rng.CombatCardSelection.NextItem(minions)!;
+        return InvitationManager.SelectRandomSalonMember(Owner);
     }
 
     protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay cardPlay)
@@ -80,16 +79,7 @@ public sealed class InviteGuest : InviteCard
         else
         {
             var minionType = SelectMinionType(choiceContext);
-            var existingMinion = Owner.PlayerCombatState?.Pets.FirstOrDefault(p => p.Monster?.GetType() == minionType);
-
-            if (existingMinion != null)
-            {
-                await EnhanceExistingMinion(choiceContext, existingMinion, minionType);
-            }
-            else
-            {
-                await SummonMinion(choiceContext, minionType);
-            }
+            await InvitationManager.InviteOusia(choiceContext, Owner, this, minionType);
             return;
         }
 

@@ -16,8 +16,7 @@ public sealed class SalonTeaParty : InviteCard
 
     protected override Type SelectMinionType(PlayerChoiceContext choiceContext)
     {
-        var minions = new[] { typeof(GentilhommeUsher), typeof(MademoiselleCrabaletta), typeof(SurintendanteChevalmarin) };
-        return Owner.RunState.Rng.CombatCardSelection.NextItem(minions)!;
+        return InvitationManager.SelectRandomSalonMember(Owner);
     }
 
     public SalonTeaParty()

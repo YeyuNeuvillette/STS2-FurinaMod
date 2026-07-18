@@ -1,26 +1,24 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
+using Furina.Scripts;
 using Godot;
 using MegaCrit.Sts2.Core.Commands;
 using MegaCrit.Sts2.Core.Entities.Cards;
 using MegaCrit.Sts2.Core.Entities.Creatures;
 using MegaCrit.Sts2.Core.Entities.Powers;
-using MegaCrit.Sts2.Core.Entities.Players;
+using MegaCrit.Sts2.Core.GameActions.Multiplayer;
+using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Nodes.Combat;
 using MegaCrit.Sts2.Core.Nodes.Rooms;
 using STS2RitsuLib.Interop.AutoRegistration;
-using Furina.Scripts;
-using MegaCrit.Sts2.Core.GameActions.Multiplayer;
-using MegaCrit.Sts2.Core.Models;
-using static Godot.Node;
 
 namespace Furina.Characters.Furina.Powers;
 
-[RegisterPower]
-public sealed class OusiaPower : FurinaPower
+public abstract class ArkheInvitationPower : FurinaPower
 {
-    private const string StorageKey = InvitationManager.OusiaKey;
+    private static readonly HashSet<(ulong playerId, string state)> SettingUp = [];
+
+    protected abstract string StorageKey { get; }
+    protected abstract string OtherStorageKey { get; }
+    protected abstract bool IsOusia { get; }
 
     public override PowerType Type => PowerType.None;
     public override PowerStackType StackType => PowerStackType.None;
@@ -28,79 +26,100 @@ public sealed class OusiaPower : FurinaPower
     public override async Task AfterRemoved(Creature oldOwner)
     {
         await base.AfterRemoved(oldOwner);
-        GD.Print("[OusiaPower] AfterRemoved called");
-        
-        var player = oldOwner?.Player;
-        if (player != null && player.PlayerCombatState?.Pets != null)
-        {
-            GD.Print($"[OusiaPower] Player found, pets count: {player.PlayerCombatState.Pets.Count}");
-            
-            MinionStorage.StoreMinions(player, StorageKey);
-            GD.Print($"[OusiaPower] Minions stored, has stored minions: {MinionStorage.HasStoredMinions(player, StorageKey)}");
 
-            var pets = player.PlayerCombatState.Pets.ToList();
-            var furinaPets = pets.Where(p => MinionStorage.IsFurinaMinion(p)).ToList();
-            GD.Print($"[OusiaPower] Killing {furinaPets.Count} Furina pets (out of {pets.Count} total) without death animation");
-            foreach (var pet in furinaPets)
-            {
-                if (pet.IsAlive)
-                {
-                    GD.Print($"[OusiaPower] Killing pet: {pet.Name}");
-                    try
-                    {
-                        Patches.SkipDeathAnimPatch.RegisterCreatureToSkipDeathAnim(pet);
-                        InvitationManager.RegisterStateSwitchRemoval(pet);
-                        await CreatureCmd.Kill(pet);
-                        GD.Print($"[OusiaPower] Pet killed successfully: {pet.Name}");
-                    }
-                    catch (Exception ex)
-                    {
-                        GD.PrintErr($"[OusiaPower] Error killing pet {pet.Name}: {ex.Message}");
-                    }
-                }
-            }
-        }
-        else
+        var player = oldOwner.Player;
+        if (player?.PlayerCombatState?.Pets == null)
+            return;
+
+        HpSyncManager.StoreHpPool(player, StorageKey);
+        MinionStorage.StoreMinions(player, StorageKey);
+
+        var minions = player.PlayerCombatState.Pets
+            .Where(InvitationManager.IsFurinaMinion)
+            .Where(pet => pet.IsAlive)
+            .ToList();
+
+        GD.Print($"[ArkheInvitationPower] Storing {StorageKey} and removing {minions.Count} active minions");
+        foreach (var minion in minions)
         {
-            GD.Print("[OusiaPower] Player or pets not found");
+            Patches.SkipDeathAnimPatch.RegisterCreatureToSkipDeathAnim(minion);
+            InvitationManager.RegisterStateSwitchRemoval(minion);
+            await CreatureCmd.Kill(minion);
         }
     }
 
-    public override async Task AfterPowerAmountChanged(PlayerChoiceContext choiceContext, PowerModel power, decimal amount, Creature? applier, CardModel? cardSource)
+    public override async Task AfterPowerAmountChanged(
+        PlayerChoiceContext choiceContext,
+        PowerModel power,
+        decimal amount,
+        Creature? applier,
+        CardModel? cardSource)
     {
         await base.AfterPowerAmountChanged(choiceContext, power, amount, applier, cardSource);
-        
-        GD.Print($"[OusiaPower] AfterPowerAmountChanged: power.Amount={power.Amount}, amount={amount}");
 
-        if (!ReferenceEquals(power, this))
+        if (!ReferenceEquals(power, this) || power.Amount <= 0m || amount <= 0m)
             return;
-        
-        if (power.Amount > 0 && amount > 0)
+
+        UpdateVisuals();
+
+        var player = Owner?.Player;
+        if (player == null || !SettingUp.Add((player.NetId, StorageKey)))
+            return;
+
+        try
         {
-            UpdateVisuals(true);
-            
-            var player = Owner?.Player;
-            if (player != null)
-            {
-                GD.Print($"[OusiaPower] Checking for stored minions");
-                GD.Print($"[OusiaPower] Has stored minions: {MinionStorage.HasStoredMinions(player, StorageKey)}");
-                if (MinionStorage.HasStoredMinions(player, StorageKey))
-                {
-                    GD.Print("[OusiaPower] Restoring minions");
-                    await MinionStorage.RestoreMinions(choiceContext, player, cardSource, StorageKey);
-                    GD.Print("[OusiaPower] Minions restored");
-                }
-                await InvitationManager.FillMissingInvitations(choiceContext, player, cardSource, StorageKey);
-            }
+            if (MinionStorage.HasStoredMinions(player, StorageKey))
+                await MinionStorage.RestoreMinions(choiceContext, player, cardSource, StorageKey);
+
+            await InvitationManager.FillMissingInvitations(choiceContext, player, cardSource, StorageKey);
+            await ApplyPreviousFormHpPool(player);
+        }
+        finally
+        {
+            SettingUp.Remove((player.NetId, StorageKey));
         }
     }
 
-    private void UpdateVisuals(bool isOusia)
+    private async Task ApplyPreviousFormHpPool(MegaCrit.Sts2.Core.Entities.Players.Player player)
+    {
+        if (!HpSyncManager.TryGetStoredHpPool(player, OtherStorageKey, out var hpPool))
+            return;
+
+        var minions = player.PlayerCombatState?.Pets
+            .Where(pet => pet.IsAlive && InvitationManager.IsFurinaMinion(pet))
+            .OrderBy(pet => pet.CombatId)
+            .ToList() ?? [];
+        var distribution = HpSyncManager.CalculateHpDistribution(minions, hpPool);
+
+        foreach (var minion in minions)
+        {
+            if (distribution.TryGetValue(minion, out var hp))
+                await CreatureCmd.SetCurrentHp(minion, hp);
+        }
+
+        GD.Print($"[ArkheInvitationPower] Applied {OtherStorageKey} HP pool {hpPool} to {StorageKey}");
+    }
+
+    private void UpdateVisuals()
     {
         var creatureNode = NCombatRoom.Instance?.GetCreatureNode(Owner);
         if (creatureNode?.Visuals is FurinaCreatureVisuals visuals)
-        {
-            visuals.SetArkheState(isOusia);
-        }
+            visuals.SetArkheState(IsOusia);
     }
+}
+
+[RegisterPower]
+public sealed class OusiaPower : ArkheInvitationPower
+{
+    protected override string StorageKey => InvitationManager.OusiaKey;
+    protected override string OtherStorageKey => InvitationManager.PneumaKey;
+    protected override bool IsOusia => true;
+}
+
+[RegisterPower]
+public sealed class PneumaPower : ArkheInvitationPower
+{
+    protected override string StorageKey => InvitationManager.PneumaKey;
+    protected override string OtherStorageKey => InvitationManager.OusiaKey;
+    protected override bool IsOusia => false;
 }

@@ -1,12 +1,15 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Furina.Characters.Furina.Cards;
+using MegaCrit.Sts2.Core.Combat;
 using MegaCrit.Sts2.Core.Entities.Cards;
 using MegaCrit.Sts2.Core.Entities.Creatures;
-using MegaCrit.Sts2.Core.Entities.Powers;
 using MegaCrit.Sts2.Core.Entities.Players;
+using MegaCrit.Sts2.Core.Entities.Powers;
 using MegaCrit.Sts2.Core.GameActions.Multiplayer;
 using MegaCrit.Sts2.Core.HoverTips;
+using MegaCrit.Sts2.Core.Localization;
 using MegaCrit.Sts2.Core.Models;
 using STS2RitsuLib.Interop.AutoRegistration;
 using STS2RitsuLib.Keywords;
@@ -14,46 +17,68 @@ using STS2RitsuLib.Keywords;
 namespace Furina.Characters.Furina.Powers;
 
 [RegisterPower]
-public sealed class BestLeadingActorPower : FurinaPower, IArkheDualEffectProvider
+public sealed class BestLeadingActorPower : FurinaPower
 {
     public override PowerType Type => PowerType.Buff;
     public override PowerStackType StackType => PowerStackType.Counter;
 
-    private int _arkheCardsPlayedThisTurn;
+    private static bool _globalIsPneumaActive = true;
 
-    public bool ShouldApplyBothEffects => _arkheCardsPlayedThisTurn < Amount;
+    public static bool GlobalIsPneumaActive => _globalIsPneumaActive;
+
+    public static void ToggleGlobalState()
+    {
+        _globalIsPneumaActive = !_globalIsPneumaActive;
+    }
+
+    private bool _isPneumaActive = true;
+
+    public bool IsPneumaActive => _isPneumaActive;
 
     protected override IEnumerable<IHoverTip> AdditionalHoverTips =>
         [HoverTipFactory.FromKeyword(ModKeywordRegistry.GetCardKeyword("FURINA_KEYWORD_OUSIA_PNEUMA"))];
 
+    protected override string SmartDescriptionLocKey => _isPneumaActive
+        ? base.Id.Entry + ".smartDescription_pneuma"
+        : base.Id.Entry + ".smartDescription_ousia";
+
+    public override LocString Description => _isPneumaActive
+        ? new LocString("powers", base.Id.Entry + ".description_pneuma")
+        : new LocString("powers", base.Id.Entry + ".description_ousia");
+
     public override async Task AfterApplied(Creature? applier, CardModel? cardSource)
     {
         await base.AfterApplied(applier, cardSource);
-        ArkheDualEffectHelper.SetForceNoneStateForHand(Owner, true);
+        _isPneumaActive = _globalIsPneumaActive;
     }
 
-    public override async Task AfterPlayerTurnStart(PlayerChoiceContext choiceContext, Player player)
+    public override async Task BeforeSideTurnEnd(PlayerChoiceContext choiceContext, CombatSide side, IEnumerable<Creature> participants)
     {
-        await base.AfterPlayerTurnStart(choiceContext, player);
-        _arkheCardsPlayedThisTurn = 0;
-        ArkheDualEffectHelper.SetForceNoneStateForHand(Owner, ShouldApplyBothEffects);
-    }
+        if (side != CombatSide.Player || Owner == null || !participants.Contains(Owner))
+            return;
 
-    public override async Task AfterCardDrawn(PlayerChoiceContext choiceContext, CardModel card, bool fromHandDraw)
-    {
-        ArkheDualEffectHelper.OnCardDrawn(Owner, card);
+        ToggleGlobalState();
+        _isPneumaActive = _globalIsPneumaActive;
+        InvokeDisplayAmountChanged();
+        PlayTransformVfxOnBestLeadingActorCard();
     }
 
     public override async Task AfterRemoved(Creature oldOwner)
     {
         await base.AfterRemoved(oldOwner);
-        ArkheDualEffectHelper.OnProviderRemoved(oldOwner);
     }
 
-    public Task OnArkheCardPlayed(PlayerChoiceContext choiceContext, CardModel cardSource)
+    private void PlayTransformVfxOnBestLeadingActorCard()
     {
-        _arkheCardsPlayedThisTurn++;
-        ArkheDualEffectHelper.SetForceNoneStateForHand(Owner, ShouldApplyBothEffects);
-        return Task.CompletedTask;
+        if (Owner?.Player == null)
+            return;
+
+        foreach (var card in PileType.Hand.GetPile(Owner.Player).Cards)
+        {
+            if (card is BestLeadingActor bestLeadingActorCard)
+            {
+                bestLeadingActorCard.PlayTransformVfx();
+            }
+        }
     }
 }

@@ -30,8 +30,7 @@ public sealed class SupportingStrike : InviteCard
 
     protected override Type SelectMinionType(PlayerChoiceContext choiceContext)
     {
-        var minions = new[] { typeof(GentilhommeUsher), typeof(MademoiselleCrabaletta), typeof(SurintendanteChevalmarin) };
-        return Owner.RunState.Rng.CombatCardSelection.NextItem(minions)!;
+        return typeof(GentilhommeUsher);
     }
 
     protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay cardPlay)

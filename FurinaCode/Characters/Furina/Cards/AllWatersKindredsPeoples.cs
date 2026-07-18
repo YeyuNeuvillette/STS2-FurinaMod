@@ -14,7 +14,7 @@ public sealed class AllWatersKindredsPeoples : FurinaCard
     public override IEnumerable<CardKeyword> CanonicalKeywords => new List<CardKeyword> { CardKeyword.Exhaust };
 
     public AllWatersKindredsPeoples()
-        : base(3, CardType.Skill, CardRarity.Rare, TargetType.None)
+        : base(2, CardType.Skill, CardRarity.Rare, TargetType.None)
     {
     }
 

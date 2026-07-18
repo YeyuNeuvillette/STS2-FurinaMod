@@ -2,8 +2,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using MegaCrit.Sts2.Core.Combat;
+using MegaCrit.Sts2.Core.Combat.History;
+using MegaCrit.Sts2.Core.Combat.History.Entries;
 using MegaCrit.Sts2.Core.Commands;
-using MegaCrit.Sts2.Core.Entities.Cards;
 using MegaCrit.Sts2.Core.Entities.Creatures;
 using MegaCrit.Sts2.Core.Entities.Players;
 using MegaCrit.Sts2.Core.Entities.Powers;
@@ -22,7 +23,18 @@ public sealed class MasqueradePower : FurinaPower
 
     protected override IEnumerable<DynamicVar> CanonicalVars => [new DynamicVar("CardsDrawn", 0m)];
 
-    private int _cardsDrawnThisTurn;
+    private int CardsDrawnThisTurn
+    {
+        get
+        {
+            if (Owner == null)
+                return 0;
+
+            return CombatManager.Instance.History.Entries
+                .OfType<CardDrawnEntry>()
+                .Count(e => e.HappenedThisTurn(CombatState) && e.Actor == Owner);
+        }
+    }
 
     public override decimal ModifyHandDraw(Player player, decimal count)
     {
@@ -36,12 +48,7 @@ public sealed class MasqueradePower : FurinaPower
     {
         await base.AfterApplied(applier, cardSource);
 
-        if (Owner?.Player == null)
-            return;
-
-        _cardsDrawnThisTurn = PileType.Hand.GetPile(Owner.Player).Cards.Count();
-        DynamicVars["CardsDrawn"].BaseValue = _cardsDrawnThisTurn;
-        InvokeDisplayAmountChanged();
+        UpdateCardsDrawnDisplay();
     }
 
     public override async Task BeforeSideTurnStart(PlayerChoiceContext choiceContext, CombatSide side, IReadOnlyList<Creature> participants, ICombatState combatState)
@@ -49,19 +56,12 @@ public sealed class MasqueradePower : FurinaPower
         if (side != CombatSide.Player || Owner == null)
             return;
 
-        _cardsDrawnThisTurn = 0;
-        DynamicVars["CardsDrawn"].BaseValue = 0;
-        InvokeDisplayAmountChanged();
+        UpdateCardsDrawnDisplay();
     }
 
     public override async Task AfterCardDrawn(PlayerChoiceContext choiceContext, CardModel card, bool fromHandDraw)
     {
-        if (Owner?.Player == null)
-            return;
-
-        _cardsDrawnThisTurn++;
-        DynamicVars["CardsDrawn"].BaseValue = _cardsDrawnThisTurn;
-        InvokeDisplayAmountChanged();
+        UpdateCardsDrawnDisplay();
     }
 
     public override async Task BeforeSideTurnEnd(PlayerChoiceContext choiceContext, CombatSide side, IEnumerable<Creature> participants)
@@ -69,12 +69,18 @@ public sealed class MasqueradePower : FurinaPower
         if (side != CombatSide.Player || Owner == null)
             return;
 
-        if (_cardsDrawnThisTurn < 10)
+        if (CardsDrawnThisTurn < 10)
         {
             await CreatureCmd.Kill(Owner);
             return;
         }
 
         await PowerCmd.ModifyAmount(choiceContext, this, -1m, Owner, null);
+    }
+
+    private void UpdateCardsDrawnDisplay()
+    {
+        DynamicVars["CardsDrawn"].BaseValue = CardsDrawnThisTurn;
+        InvokeDisplayAmountChanged();
     }
 }

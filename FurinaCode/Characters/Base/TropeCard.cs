@@ -39,7 +39,7 @@ public abstract class TropeCard : BaseCard
     {
     }
 
-    protected override (PileType, CardPilePosition) GetResultPileTypeAndPositionForCardPlay()
+    protected override CardLocation GetResultLocationForCardPlay()
     {
         var result = PileType.None;
         var position = CardPilePosition.Top;
@@ -60,8 +60,8 @@ public abstract class TropeCard : BaseCard
             position = CardPilePosition.Top;
         }
         
-        GD.Print($"[TropeCard] GetResultPileTypeAndPositionForCardPlay for {Id.Entry}: result={result}, position={position}, _isPlayingFromScriptPile: {_isPlayingFromScriptPile}");
-        return (result, position);
+        GD.Print($"[TropeCard] GetResultLocationForCardPlay for {Id.Entry}: result={result}, position={position}, _isPlayingFromScriptPile: {_isPlayingFromScriptPile}");
+        return new CardLocation(Owner, result, position);
     }
 
     private async Task CheckAndGenerateScript(PlayerChoiceContext choiceContext)

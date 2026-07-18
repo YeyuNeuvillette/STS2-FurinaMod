@@ -17,8 +17,7 @@ public sealed class Encore : FurinaCard
     protected override IEnumerable<DynamicVar> CanonicalVars => new List<DynamicVar>
     {
         new DamageVar(4m, DamageProps.card),
-        new CardsVar(1),
-        new EnergyVar(1)
+        new CardsVar(1)
     };
 
     protected override bool ShouldGlowGoldInternal => HasPlayedEnoughOtherCards();
@@ -43,8 +42,11 @@ public sealed class Encore : FurinaCard
 
         if (HasPlayedEnoughOtherCards())
         {
-            await CardPileCmd.Draw(choiceContext, DynamicVars.Cards.IntValue, Owner);
-            await PlayerCmd.GainEnergy(DynamicVars.Energy.IntValue, Owner);
+            var drawnCards = await CardPileCmd.Draw(choiceContext, DynamicVars.Cards.IntValue, Owner);
+            foreach (var card in drawnCards)
+            {
+                card.EnergyCost.AddThisTurn(-1);
+            }
         }
     }
 

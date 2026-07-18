@@ -44,28 +44,7 @@ public sealed class Transition : BaseCard
         GD.Print($"[Transition] Gaining {baseBlock} block");
         await CreatureCmd.GainBlock(creature, baseBlock, ValueProp.Move, cardPlay);
 
-        GD.Print($"[Transition] Checking powers: has OusiaPower={creature.HasPower<OusiaPower>()}, has PneumaPower={creature.HasPower<PneumaPower>()}");
-        
-        if (creature.HasPower<OusiaPower>())
-        {
-            GD.Print("[Transition] Removing OusiaPower, applying PneumaPower");
-            await PowerCmd.Remove<OusiaPower>(creature);
-            await PowerCmd.Apply<PneumaPower>(new ThrowingPlayerChoiceContext(), creature, 1m, creature, null);
-            GD.Print("[Transition] PneumaPower applied");
-        }
-        else if (creature.HasPower<PneumaPower>())
-        {
-            GD.Print("[Transition] Removing PneumaPower, applying OusiaPower");
-            await PowerCmd.Remove<PneumaPower>(creature);
-            await PowerCmd.Apply<OusiaPower>(new ThrowingPlayerChoiceContext(), creature, 1m, creature, null);
-            GD.Print("[Transition] OusiaPower applied");
-        }
-        else
-        {
-            GD.Print("[Transition] No Arkhe power found, applying OusiaPower");
-            await PowerCmd.Apply<OusiaPower>(new ThrowingPlayerChoiceContext(), creature, 1m, creature, null);
-            GD.Print("[Transition] OusiaPower applied");
-        }
+        await InvitationManager.SwitchArkhe(choiceContext, Owner, this);
     }
 
     protected override void OnUpgrade()

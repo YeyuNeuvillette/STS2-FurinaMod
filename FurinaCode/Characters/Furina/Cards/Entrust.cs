@@ -47,13 +47,13 @@ public sealed class Entrust : OusiaPneumaCard
     {
     }
 
-    protected override (PileType, CardPilePosition) GetResultPileTypeAndPositionForCardPlay()
+    protected override CardLocation GetResultLocationForCardPlay()
     {
         if (CurrentArkheState is ArkheState.Pneuma or ArkheState.None)
         {
-            return (PileType.Exhaust, CardPilePosition.None);
+            return new CardLocation(Owner, PileType.Exhaust, CardPilePosition.None);
         }
-        return base.GetResultPileTypeAndPositionForCardPlay();
+        return base.GetResultLocationForCardPlay();
     }
 
     protected override async Task OnOusiaEffect(PlayerChoiceContext choiceContext, CardPlay cardPlay)

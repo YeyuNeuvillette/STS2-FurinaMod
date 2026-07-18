@@ -54,7 +54,7 @@ public sealed class SalonSolitaireGameAction : GameAction
 
         foreach (var pet in pets)
         {
-            if (MinionStorage.IsFurinaMinion(pet) && pet.GetPower<MinionGuardianPower>() != null)
+            if (InvitationManager.IsFurinaMinion(pet) && pet.GetPower<MinionGuardianPower>() != null)
             {
                 await PowerCmd.Remove<MinionGuardianPower>(pet);
             }

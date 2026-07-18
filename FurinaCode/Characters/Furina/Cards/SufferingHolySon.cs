@@ -18,7 +18,7 @@ public sealed class SufferingHolySon : FurinaCard
     protected override IEnumerable<DynamicVar> CanonicalVars => new List<DynamicVar>
     {
         new HpLossVar(2m),
-        new DynamicVar("MaxHpLoss", 20m)
+        new DynamicVar("MaxHpLoss", 30m)
     };
 
     public SufferingHolySon()

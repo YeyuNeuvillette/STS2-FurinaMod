@@ -12,6 +12,7 @@ using MinionLib.Action;
 using Furina.RitsuAdapters;
 using MinionLib.Commands;
 using MinionLib.Targeting;
+using Furina.Characters.Furina.Targeting;
 using MegaCrit.Sts2.Core.Entities.Cards;
 using STS2RitsuLib.Scaffolding.Content;
 using MegaCrit.Sts2.Core.Models;
@@ -23,7 +24,7 @@ public sealed class CrabShield : ModActionTemplate
     private const string _usesKey = "Uses";
     private const string _blockKey = "Block";
 
-    public override TargetType TargetType => MinionTargetTypes.AnyMinionOrOwner;
+    public override TargetType TargetType => FurinaTargetTypes.AnyPlayer;
 
     public override bool AutoRemoveAtTurnEnd => false;
 

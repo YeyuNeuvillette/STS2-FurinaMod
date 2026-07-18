@@ -20,13 +20,6 @@ namespace Furina.Characters.Furina.Cards;
 [RegisterCard(typeof(FurinaCardPool))]
 public sealed class EveryoneOut : InviteCard
 {
-    private static readonly HashSet<Type> SalonMemberTypes =
-    [
-        typeof(GentilhommeUsher),
-        typeof(MademoiselleCrabaletta),
-        typeof(SurintendanteChevalmarin)
-    ];
-
     protected override IEnumerable<DynamicVar> CanonicalVars => new List<DynamicVar>
     {
         new PowerVar<EveryoneOutPower>(1m)
@@ -61,9 +54,7 @@ public sealed class EveryoneOut : InviteCard
         }
         else
         {
-            var salonMembers = new[] { typeof(GentilhommeUsher), typeof(MademoiselleCrabaletta), typeof(SurintendanteChevalmarin) };
-
-            foreach (var minionType in salonMembers)
+            foreach (var minionType in InvitationManager.GetSalonMemberTypes())
             {
                 await HandleOusiaState(choiceContext, minionType);
             }
@@ -76,7 +67,7 @@ public sealed class EveryoneOut : InviteCard
     private async Task AddExtraUsesToSalonMembers(decimal extraAmount)
     {
         var salonPets = Owner!.PlayerCombatState?.Pets
-            .Where(p => p.Monster != null && SalonMemberTypes.Contains(p.Monster.GetType()))
+            .Where(InvitationManager.IsSalonMember)
             .ToList();
 
         if (salonPets == null)

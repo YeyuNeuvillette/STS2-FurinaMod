@@ -1,17 +1,11 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using MegaCrit.Sts2.Core.Commands;
-using MegaCrit.Sts2.Core.Entities.Cards;
-using MegaCrit.Sts2.Core.Entities.Creatures;
-using MegaCrit.Sts2.Core.Entities.Players;
-using MegaCrit.Sts2.Core.GameActions.Multiplayer;
-using MinionLib.Minion;
+using Furina.Characters.Base;
 using Furina.Characters.Furina.Minions;
 using Furina.Characters.Furina.Powers;
-using MinionLib.Commands;
-using Godot;
+using MegaCrit.Sts2.Core.Entities.Cards;
+using MegaCrit.Sts2.Core.GameActions.Multiplayer;
+using MegaCrit.Sts2.Core.Models.CardPools;
+using MegaCrit.Sts2.Core.Models.Monsters;
+using STS2RitsuLib.Interop.AutoRegistration;
 using STS2RitsuLib.Keywords;
 
 namespace Furina.Characters.Furina.Cards;
@@ -24,10 +18,10 @@ public abstract class InviteCard(
     bool shouldShowInCardLibrary = true)
     : FurinaCard(energyCost, type, rarity, target, shouldShowInCardLibrary)
 {
-    public override IEnumerable<CardKeyword> CanonicalKeywords => new List<CardKeyword>
-    {
+    public override IEnumerable<CardKeyword> CanonicalKeywords =>
+    [
         ModKeywordRegistry.GetCardKeyword("FURINA_KEYWORD_INVITE")
-    };
+    ];
 
     protected abstract Type SelectMinionType(PlayerChoiceContext choiceContext);
 
@@ -36,178 +30,72 @@ public abstract class InviteCard(
         if (Owner?.Creature == null)
             return;
 
-        var ousiaPower = Owner.Creature.GetPower<OusiaPower>();
-        var pneumaPower = Owner.Creature.GetPower<PneumaPower>();
-
-        if (ousiaPower != null && ousiaPower.Amount > 0)
-        {
-            await HandleOusiaState(choiceContext);
-        }
-        else if (pneumaPower != null && pneumaPower.Amount > 0)
-        {
-            await HandlePneumaState(choiceContext);
-        }
+        if (Owner.Creature.HasPower<OusiaPower>())
+            await InvitationManager.InviteOusia(choiceContext, Owner, this, SelectMinionType(choiceContext));
+        else if (Owner.Creature.HasPower<PneumaPower>())
+            await InvitationManager.InvitePneuma(choiceContext, Owner, this);
     }
 
-    protected async Task HandleOusiaState(PlayerChoiceContext choiceContext)
+    protected Task HandleOusiaState(PlayerChoiceContext choiceContext) =>
+        HandleOusiaState(choiceContext, SelectMinionType(choiceContext));
+
+    protected Task HandleOusiaState(PlayerChoiceContext choiceContext, Type minionType) =>
+        Owner == null
+            ? Task.CompletedTask
+            : InvitationManager.InviteOusia(choiceContext, Owner, this, minionType);
+
+    protected Task HandlePneumaState(PlayerChoiceContext choiceContext) =>
+        Owner == null
+            ? Task.CompletedTask
+            : InvitationManager.InvitePneuma(choiceContext, Owner, this);
+}
+
+public abstract class FixedInvitationCard<TMinion> : InviteCard, KnowledgeDemon.IChoosable
+{
+    public override bool CanBeGeneratedInCombat => false;
+    public override int MaxUpgradeLevel => 0;
+
+    protected FixedInvitationCard()
+        : base(-1, CardType.Skill, CardRarity.Status, TargetType.None, shouldShowInCardLibrary: false)
     {
-        await HandleOusiaState(choiceContext, SelectMinionType(choiceContext));
     }
 
-    protected async Task HandleOusiaState(PlayerChoiceContext choiceContext, Type minionType)
+    protected override Type SelectMinionType(PlayerChoiceContext choiceContext) => typeof(TMinion);
+
+    public Task OnChosen() => Invite(new ThrowingPlayerChoiceContext());
+
+    protected override Task OnPlay(PlayerChoiceContext choiceContext, CardPlay cardPlay) => Invite(choiceContext);
+
+    protected virtual Task Invite(PlayerChoiceContext choiceContext)
     {
-        if (Owner != null)
-            await InvitationManager.InviteOusia(choiceContext, Owner, this, minionType);
+        return Owner == null
+            ? Task.CompletedTask
+            : InvitationManager.InviteOusia(choiceContext, Owner, this, typeof(TMinion));
     }
+}
 
-    protected async Task HandlePneumaState(PlayerChoiceContext choiceContext)
+[RegisterCard(typeof(TokenCardPool))]
+public sealed class InviteGentilhommeUsher : FixedInvitationCard<GentilhommeUsher>
+{
+}
+
+[RegisterCard(typeof(TokenCardPool))]
+public sealed class InviteMademoiselleCrabaletta : FixedInvitationCard<MademoiselleCrabaletta>
+{
+}
+
+[RegisterCard(typeof(TokenCardPool))]
+public sealed class InviteSurintendanteChevalmarin : FixedInvitationCard<SurintendanteChevalmarin>
+{
+}
+
+[RegisterCard(typeof(FurinaCardPool))]
+public sealed class InviteSingerOfManyWaters : FixedInvitationCard<SingerOfManyWaters>
+{
+    protected override Task Invite(PlayerChoiceContext choiceContext)
     {
-        if (Owner?.Creature == null)
-            return;
-
-        await InvitationManager.InvitePneuma(choiceContext, Owner, this);
-    }
-
-    protected async Task SummonMinion(PlayerChoiceContext choiceContext, Type minionType)
-    {
-        if (Owner?.Creature == null)
-            return;
-
-        if (minionType == typeof(GentilhommeUsher))
-        {
-            await MinionCmd.AddMinion<GentilhommeUsher>(choiceContext, Owner, new MinionSummonOptions(
-                MaxHp: 3m,
-                Source: this,
-                Position: MinionPosition.Front));
-        }
-        else if (minionType == typeof(MademoiselleCrabaletta))
-        {
-            await MinionCmd.AddMinion<MademoiselleCrabaletta>(choiceContext, Owner, new MinionSummonOptions(
-                MaxHp: 3m,
-                Source: this,
-                Position: MinionPosition.Front));
-        }
-        else if (minionType == typeof(SurintendanteChevalmarin))
-        {
-            await MinionCmd.AddMinion<SurintendanteChevalmarin>(choiceContext, Owner, new MinionSummonOptions(
-                MaxHp: 3m,
-                Source: this,
-                Position: MinionPosition.Front));
-        }
-    }
-
-    protected async Task EnhanceExistingMinion(PlayerChoiceContext choiceContext, Creature existingMinion, Type minionType)
-    {
-        if (Owner?.Creature == null)
-            return;
-
-        if (existingMinion == null || existingMinion.PetOwner == null)
-        {
-            GD.PrintErr("[InviteCard] Existing minion is null or has no owner");
-            return;
-        }
-
-        GD.Print($"[InviteCard] Enhancing existing minion: {existingMinion.Name}, Type: {minionType.Name}");
-        GD.Print($"[InviteCard] Before enhancement - MaxHp: {existingMinion.MaxHp}, CurrentHp: {existingMinion.CurrentHp}");
-
-        var oldMaxHp = existingMinion.MaxHp;
-        var oldCurrentHp = existingMinion.CurrentHp;
-        var newMaxHp = oldMaxHp + 3;
-        
-        await CreatureCmd.SetMaxHp(existingMinion, newMaxHp);
-        
-        var hpIncrease = newMaxHp - oldMaxHp;
-        var newCurrentHp = Math.Min(oldCurrentHp + hpIncrease, newMaxHp);
-        await CreatureCmd.SetCurrentHp(existingMinion, newCurrentHp);
-        
-        GD.Print($"[InviteCard] After HP enhancement - MaxHp: {existingMinion.MaxHp}, CurrentHp: {existingMinion.CurrentHp}");
-
-        if (minionType == typeof(GentilhommeUsher))
-        {
-            GD.Print("[InviteCard] Enhancing HydroBarrage");
-            await EnhanceHydroBarrage(choiceContext, existingMinion);
-        }
-        else if (minionType == typeof(MademoiselleCrabaletta))
-        {
-            GD.Print("[InviteCard] Enhancing CrabShield");
-            await EnhanceCrabShield(choiceContext, existingMinion);
-        }
-        else if (minionType == typeof(SurintendanteChevalmarin))
-        {
-            GD.Print("[InviteCard] Enhancing PureWaterNote");
-            await EnhancePureWaterNote(choiceContext, existingMinion);
-        }
-    }
-
-    protected async Task EnhanceSingerOfManyWaters(PlayerChoiceContext choiceContext, Creature singer)
-    {
-        if (Owner?.Creature == null)
-            return;
-
-        GD.Print($"[InviteCard] Enhancing SingerOfManyWaters: {singer.Name}");
-        GD.Print($"[InviteCard] Before enhancement - MaxHp: {singer.MaxHp}, CurrentHp: {singer.CurrentHp}");
-
-        var oldMaxHp = singer.MaxHp;
-        var oldCurrentHp = singer.CurrentHp;
-        var newMaxHp = oldMaxHp + 5;
-        
-        await CreatureCmd.SetMaxHp(singer, newMaxHp);
-        
-        var hpIncrease = newMaxHp - oldMaxHp;
-        var newCurrentHp = Math.Min(oldCurrentHp + hpIncrease, newMaxHp);
-        await CreatureCmd.SetCurrentHp(singer, newCurrentHp);
-        
-        GD.Print($"[InviteCard] After HP enhancement - MaxHp: {singer.MaxHp}, CurrentHp: {singer.CurrentHp}");
-    }
-
-    private async Task EnhanceHydroBarrage(PlayerChoiceContext choiceContext, Creature minion)
-    {
-        GD.Print("[InviteCard] EnhanceHydroBarrage called");
-        var hydroBarrage = minion.GetPower<Actions.HydroBarrage>();
-        if (hydroBarrage != null)
-        {
-            GD.Print($"[InviteCard] HydroBarrage found, applying enhancement");
-            await PowerCmd.Apply<Actions.HydroBarrageEnhancement>(choiceContext, minion, 1m, Owner.Creature, this);
-            hydroBarrage.UpdateDamage();
-            GD.Print($"[InviteCard] UpdateDamage called");
-        }
-        else
-        {
-            GD.PrintErr("[InviteCard] HydroBarrage power not found");
-        }
-    }
-
-    private async Task EnhanceCrabShield(PlayerChoiceContext choiceContext, Creature minion)
-    {
-        GD.Print("[InviteCard] EnhanceCrabShield called");
-        var crabShield = minion.GetPower<Actions.CrabShield>();
-        if (crabShield != null)
-        {
-            GD.Print($"[InviteCard] CrabShield found, applying enhancement");
-            await PowerCmd.Apply<Actions.CrabShieldEnhancement>(choiceContext, minion, 1m, Owner.Creature, this);
-            crabShield.UpdateBlock();
-            GD.Print($"[InviteCard] UpdateBlock called");
-        }
-        else
-        {
-            GD.PrintErr("[InviteCard] CrabShield power not found");
-        }
-    }
-
-    private async Task EnhancePureWaterNote(PlayerChoiceContext choiceContext, Creature minion)
-    {
-        GD.Print("[InviteCard] EnhancePureWaterNote called");
-        var pureWaterNote = minion.GetPower<Actions.PureWaterNote>();
-        if (pureWaterNote != null)
-        {
-            GD.Print($"[InviteCard] PureWaterNote found, applying enhancement");
-            await PowerCmd.Apply<Actions.PureWaterNoteEnhancement>(choiceContext, minion, 1m, Owner.Creature, this);
-            pureWaterNote.UpdateDraw();
-            GD.Print($"[InviteCard] UpdateDraw called");
-        }
-        else
-        {
-            GD.PrintErr("[InviteCard] PureWaterNote power not found");
-        }
+        return Owner == null
+            ? Task.CompletedTask
+            : InvitationManager.InvitePneuma(choiceContext, Owner, this);
     }
 }

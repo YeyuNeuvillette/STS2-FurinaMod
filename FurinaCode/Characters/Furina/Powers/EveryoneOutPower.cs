@@ -20,13 +20,6 @@ public sealed class EveryoneOutPower : FurinaPower
     public override PowerType Type => PowerType.Buff;
     public override PowerStackType StackType => PowerStackType.Counter;
 
-    private static readonly HashSet<System.Type> SalonMemberTypes =
-    [
-        typeof(GentilhommeUsher),
-        typeof(MademoiselleCrabaletta),
-        typeof(SurintendanteChevalmarin)
-    ];
-
     public override async Task AfterSideTurnStartLate(CombatSide side, IReadOnlyList<Creature> participants, ICombatState combatState)
     {
         if (side != CombatSide.Player || Owner?.Player == null)
@@ -38,7 +31,7 @@ public sealed class EveryoneOutPower : FurinaPower
     internal async Task AddExtraUsesToSalonMembers(decimal extraAmount)
     {
         var salonPets = Owner!.Player!.PlayerCombatState?.Pets
-            .Where(p => p.Monster != null && SalonMemberTypes.Contains(p.Monster.GetType()))
+            .Where(InvitationManager.IsSalonMember)
             .ToList();
 
         if (salonPets == null)

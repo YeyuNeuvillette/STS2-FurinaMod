@@ -332,6 +332,8 @@ public abstract class OusiaPneumaCard(
         }
     }
 
+    public void PlayTransformVfx() => RefreshCardVisuals();
+
     protected virtual void RefreshCardVisuals()
     {
         try
@@ -399,6 +401,24 @@ public abstract class OusiaPneumaCard(
                 GD.Print($"[OusiaPneumaCard] OnPlay -> OnNoArkheEffect for card {base.Id?.Entry ?? "UNKNOWN"}");
                 await OnNoArkheEffect(choiceContext, cardPlay);
                 break;
+        }
+
+        var bestLeadingActorPower = creature.GetPower<BestLeadingActorPower>();
+        if (bestLeadingActorPower != null)
+        {
+            bool stateMatches = (bestLeadingActorPower.IsPneumaActive && CurrentArkheState == ArkheState.Pneuma)
+                             || (!bestLeadingActorPower.IsPneumaActive && CurrentArkheState == ArkheState.Ousia);
+            GD.Print($"[OusiaPneumaCard] OnPlay -> BestLeadingActor check for card {base.Id?.Entry ?? "UNKNOWN"}: IsPneumaActive={bestLeadingActorPower.IsPneumaActive}, CardState={CurrentArkheState}, Matches={stateMatches}");
+            if (stateMatches)
+            {
+                for (int i = 0; i < bestLeadingActorPower.Amount; i++)
+                {
+                    if (bestLeadingActorPower.IsPneumaActive)
+                        await OnPneumaEffect(choiceContext, cardPlay);
+                    else
+                        await OnOusiaEffect(choiceContext, cardPlay);
+                }
+            }
         }
     }
 

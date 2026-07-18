@@ -12,6 +12,8 @@ using MegaCrit.Sts2.Core.GameActions.Multiplayer;
 using MegaCrit.Sts2.Core.Models;
 using MinionLib.Commands;
 using MinionLib.Minion;
+using MegaCrit.Sts2.Core.Entities.Powers;
+using Furina.Characters.Furina.Powers;
 
 namespace Furina.Characters.Furina;
 
@@ -25,6 +27,12 @@ public static class InvitationManager
         typeof(GentilhommeUsher),
         typeof(MademoiselleCrabaletta),
         typeof(SurintendanteChevalmarin)
+    ];
+
+    private static readonly HashSet<Type> FurinaMinionTypes =
+    [
+        .. SalonMemberTypes,
+        typeof(SingerOfManyWaters)
     ];
 
     private static readonly Dictionary<ulong, int> TotalInvitations = new();
@@ -45,9 +53,72 @@ public static class InvitationManager
         StateSwitchRemovals.Add(creature.CombatId);
     }
 
+    public static bool IsFurinaMinion(Creature creature) =>
+        creature.Monster != null && FurinaMinionTypes.Contains(creature.Monster.GetType());
+
+    public static bool IsSalonMember(Creature creature) =>
+        creature.Monster != null && SalonMemberTypes.Contains(creature.Monster.GetType());
+
+    public static IReadOnlyList<Type> GetSalonMemberTypes() => SalonMemberTypes;
+
+    public static Type SelectRandomSalonMember(Player player) =>
+        player.RunState.Rng.CombatCardSelection.NextItem(SalonMemberTypes)!;
+
+    public static async Task SwitchArkhe(
+        PlayerChoiceContext choiceContext,
+        Player player,
+        CardModel? source)
+    {
+        var creature = player.Creature;
+        if (creature.HasPower<OusiaPower>())
+        {
+            await PowerCmd.Remove<OusiaPower>(creature);
+            await PowerCmd.Apply<PneumaPower>(choiceContext, creature, 1m, creature, source);
+        }
+        else
+        {
+            if (creature.HasPower<PneumaPower>())
+                await PowerCmd.Remove<PneumaPower>(creature);
+            await PowerCmd.Apply<OusiaPower>(choiceContext, creature, 1m, creature, source);
+        }
+    }
+
+    public static IReadOnlySet<ModelId> GetOnSummonPowerIds(Type minionType)
+    {
+        if (minionType == typeof(GentilhommeUsher))
+            return new HashSet<ModelId> { ModelDb.GetId(typeof(HydroBarrage)), ModelDb.GetId(typeof(SalonSolitairePower)) };
+        if (minionType == typeof(MademoiselleCrabaletta))
+            return new HashSet<ModelId> { ModelDb.GetId(typeof(CrabShield)), ModelDb.GetId(typeof(SalonSolitairePower)) };
+        if (minionType == typeof(SurintendanteChevalmarin))
+            return new HashSet<ModelId> { ModelDb.GetId(typeof(PureWaterNote)), ModelDb.GetId(typeof(SalonSolitairePower)) };
+        if (minionType == typeof(SingerOfManyWaters))
+            return new HashSet<ModelId> { ModelDb.GetId(typeof(JoyfulSinging)) };
+        return new HashSet<ModelId>();
+    }
+
+    public static async Task<Creature?> SummonMinion(
+        PlayerChoiceContext choiceContext,
+        Player player,
+        CardModel? source,
+        Type minionType,
+        decimal maxHp)
+    {
+        var options = new MinionSummonOptions(MaxHp: maxHp, Source: source, Position: MinionPosition.Front);
+        if (minionType == typeof(GentilhommeUsher))
+            return await MinionCmd.AddMinion<GentilhommeUsher>(choiceContext, player, options);
+        if (minionType == typeof(MademoiselleCrabaletta))
+            return await MinionCmd.AddMinion<MademoiselleCrabaletta>(choiceContext, player, options);
+        if (minionType == typeof(SurintendanteChevalmarin))
+            return await MinionCmd.AddMinion<SurintendanteChevalmarin>(choiceContext, player, options);
+        if (minionType == typeof(SingerOfManyWaters))
+            return await MinionCmd.AddMinion<SingerOfManyWaters>(choiceContext, player, options);
+
+        throw new ArgumentOutOfRangeException(nameof(minionType), minionType, "Not a Furina minion type.");
+    }
+
     public static async Task InviteOusia(PlayerChoiceContext choiceContext, Player player, CardModel? source, Type? minionType = null, bool isNewInvitation = true)
     {
-        minionType ??= player.RunState.Rng.CombatCardSelection.NextItem(SalonMemberTypes)!;
+        minionType ??= SelectRandomSalonMember(player);
         var existing = player.PlayerCombatState?.Pets.FirstOrDefault(p => p.Monster?.GetType() == minionType);
 
         if (existing == null)
@@ -63,12 +134,11 @@ public static class InvitationManager
         var singer = player.PlayerCombatState?.GetPet<SingerOfManyWaters>();
         if (singer == null)
         {
-            await MinionCmd.AddMinion<SingerOfManyWaters>(choiceContext, player, new MinionSummonOptions(
-                MaxHp: 3m, Source: source, Position: MinionPosition.Front));
+            await SummonMinion(choiceContext, player, source, typeof(SingerOfManyWaters), 3m);
         }
         else
         {
-            await IncreaseHp(singer, 5m);
+            await IncreaseHp(singer, 3m);
         }
 
         RecordInvitation(player, PneumaKey, isNewInvitation);
@@ -142,22 +212,17 @@ public static class InvitationManager
     private static int GetContribution(Creature creature, string state)
     {
         if (state == PneumaKey)
-            return creature.MaxHp < 3m ? 0 : 1 + (int)((creature.MaxHp - 3m) / 5m);
+            return creature.MaxHp < 3m ? 0 : 1 + (int)((creature.MaxHp - 3m) / 3m);
 
         return Math.Max(1, (int)(creature.MaxHp / 3m));
     }
 
     private static async Task SummonSalonMember(PlayerChoiceContext choiceContext, Player player, CardModel? source, Type minionType)
     {
-        var options = new MinionSummonOptions(MaxHp: 3m, Source: source, Position: MinionPosition.Front);
-        if (minionType == typeof(GentilhommeUsher))
-            await MinionCmd.AddMinion<GentilhommeUsher>(choiceContext, player, options);
-        else if (minionType == typeof(MademoiselleCrabaletta))
-            await MinionCmd.AddMinion<MademoiselleCrabaletta>(choiceContext, player, options);
-        else if (minionType == typeof(SurintendanteChevalmarin))
-            await MinionCmd.AddMinion<SurintendanteChevalmarin>(choiceContext, player, options);
-        else
+        if (!SalonMemberTypes.Contains(minionType))
             throw new ArgumentOutOfRangeException(nameof(minionType), minionType, "Not a salon member type.");
+
+        await SummonMinion(choiceContext, player, source, minionType, 3m);
     }
 
     private static async Task EnhanceSalonMember(PlayerChoiceContext choiceContext, Player player, CardModel? source, Creature minion, Type minionType)
@@ -188,5 +253,6 @@ public static class InvitationManager
         var newCurrentHp = Math.Min(creature.CurrentHp + amount, newMaxHp);
         await CreatureCmd.SetMaxHp(creature, newMaxHp);
         await CreatureCmd.SetCurrentHp(creature, newCurrentHp);
+
     }
 }

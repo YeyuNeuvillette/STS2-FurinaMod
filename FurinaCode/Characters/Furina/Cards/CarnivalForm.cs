@@ -16,6 +16,9 @@ namespace Furina.Characters.Furina.Cards;
 [RegisterCard(typeof(FurinaCardPool))]
 public sealed class CarnivalForm : FurinaCard
 {
+    public override IEnumerable<CardKeyword> CanonicalKeywords =>
+        new List<CardKeyword> { CardKeyword.Ethereal };
+
     protected override IEnumerable<DynamicVar> CanonicalVars => new List<DynamicVar>
     {
         new PowerVar<CarnivalFormStrengthPower>(1m),
@@ -41,7 +44,6 @@ public sealed class CarnivalForm : FurinaCard
 
     protected override void OnUpgrade()
     {
-        DynamicVars["CarnivalFormStrengthPower"].UpgradeValueBy(1m);
-        DynamicVars["CarnivalFormDexterityPower"].UpgradeValueBy(1m);
+        RemoveKeyword(CardKeyword.Ethereal);
     }
 }
