@@ -75,48 +75,17 @@ public sealed class AllTheWorldsAStage : FurinaCard
             selectedCards.AddRange(remaining.Take(cardCount - selectedCards.Count).Select(x => x.Card));
         }
 
-        var scriptPileType = ScriptPileRegistration.GetScriptPileType();
-
         foreach (var canonicalCard in selectedCards)
         {
             var card = CombatState.CreateCard(canonicalCard, Owner);
-            await CardPileCmd.AddGeneratedCardToCombat(card, scriptPileType, Owner);
+            await CardPileCmd.AddGeneratedCardToCombat(card, TropeSystem.PileType, Owner);
         }
 
-        await EnsureScriptCardExists(choiceContext);
+        await TropeSystem.EnsureScriptCard(Owner);
     }
 
     protected override void OnUpgrade()
     {
     }
 
-    private async Task EnsureScriptCardExists(PlayerChoiceContext choiceContext)
-    {
-        if (Owner?.PlayerCombatState == null)
-            return;
-
-        var hand = Owner.PlayerCombatState.Hand;
-        var drawPile = Owner.PlayerCombatState.DrawPile;
-        var discardPile = Owner.PlayerCombatState.DiscardPile;
-
-        var hasScript = hand.Cards.Any(c => c is Script)
-                        || drawPile.Cards.Any(c => c is Script)
-                        || discardPile.Cards.Any(c => c is Script);
-
-        if (!hasScript)
-        {
-            var combatState = Owner.Creature.CombatState;
-            if (combatState == null)
-                return;
-
-            var scriptCard = combatState.CreateCard<Script>(Owner);
-            await CardPileCmd.AddGeneratedCardToCombat(scriptCard, PileType.Hand, Owner);
-            ScriptPileRegistration.OnScriptCardCreated();
-
-            if (scriptCard is Script script)
-            {
-                script.EnsureScriptPileSubscription();
-            }
-        }
-    }
 }

@@ -60,12 +60,15 @@ public partial class MainFile : Node
         RegisterKeywords();
         RegisterRightClickHandlers();
         RegisterConditionalPowers();
-        ScriptPileRegistration.Register();
+        TropeSystem.Register();
         SubscribeToCombatEvents();
         SufferingHolySonManager.Register();
         RitsuLibFramework.SubscribeLifecycle<CombatStartingEvent>(evt =>
         {
-            MovementCard.ResetCombatState();
+            MovementSystem.ResetCombat();
+            TropeSystem.ResetCombat();
+            CardUpgradeEventBus.Clear();
+            SkipDeathAnimPatch.ClearAll();
             MinionStorage.ClearAll();
             InvitationManager.ClearAll();
             if (evt.CombatState is CombatState combatState)
@@ -95,7 +98,7 @@ public partial class MainFile : Node
 
     private static void OnCombatEnded(CombatRoom _)
     {
-        ScriptPileRegistration.OnCombatEnd();
+        TropeSystem.ResetCombat();
         CardUpgradeEventBus.Clear();
     }
 

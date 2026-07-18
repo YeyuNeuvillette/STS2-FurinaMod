@@ -27,18 +27,18 @@ public sealed class ChorusPower : FurinaPower, IArkheDualEffectProvider
     public override async Task AfterApplied(Creature? applier, CardModel? cardSource)
     {
         await base.AfterApplied(applier, cardSource);
-        ArkheDualEffectHelper.SetForceNoneStateForHand(Owner, true);
+        ArkheSystem.RefreshHand(Owner);
     }
 
     public override async Task AfterCardDrawn(PlayerChoiceContext choiceContext, CardModel card, bool fromHandDraw)
     {
-        ArkheDualEffectHelper.OnCardDrawn(Owner, card);
+        ArkheSystem.RefreshCard(Owner, card);
     }
 
     public override async Task AfterRemoved(Creature oldOwner)
     {
         await base.AfterRemoved(oldOwner);
-        ArkheDualEffectHelper.OnProviderRemoved(oldOwner);
+        ArkheSystem.RefreshHand(oldOwner);
     }
 
     public async Task OnArkheCardPlayed(PlayerChoiceContext choiceContext, CardModel cardSource)

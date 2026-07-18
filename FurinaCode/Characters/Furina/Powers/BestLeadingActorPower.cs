@@ -22,15 +22,6 @@ public sealed class BestLeadingActorPower : FurinaPower
     public override PowerType Type => PowerType.Buff;
     public override PowerStackType StackType => PowerStackType.Counter;
 
-    private static bool _globalIsPneumaActive = true;
-
-    public static bool GlobalIsPneumaActive => _globalIsPneumaActive;
-
-    public static void ToggleGlobalState()
-    {
-        _globalIsPneumaActive = !_globalIsPneumaActive;
-    }
-
     private bool _isPneumaActive = true;
 
     public bool IsPneumaActive => _isPneumaActive;
@@ -49,7 +40,12 @@ public sealed class BestLeadingActorPower : FurinaPower
     public override async Task AfterApplied(Creature? applier, CardModel? cardSource)
     {
         await base.AfterApplied(applier, cardSource);
-        _isPneumaActive = _globalIsPneumaActive;
+    }
+
+    public void SetPneumaState(bool isPneumaActive)
+    {
+        _isPneumaActive = isPneumaActive;
+        InvokeDisplayAmountChanged();
     }
 
     public override async Task BeforeSideTurnEnd(PlayerChoiceContext choiceContext, CombatSide side, IEnumerable<Creature> participants)
@@ -57,8 +53,7 @@ public sealed class BestLeadingActorPower : FurinaPower
         if (side != CombatSide.Player || Owner == null || !participants.Contains(Owner))
             return;
 
-        ToggleGlobalState();
-        _isPneumaActive = _globalIsPneumaActive;
+        _isPneumaActive = !_isPneumaActive;
         InvokeDisplayAmountChanged();
         PlayTransformVfxOnBestLeadingActorCard();
     }

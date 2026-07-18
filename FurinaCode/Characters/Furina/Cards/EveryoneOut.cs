@@ -42,10 +42,7 @@ public sealed class EveryoneOut : InviteCard
 
         await CreatureCmd.TriggerAnim(Owner.Creature, "Cast", Owner.Character.CastAnimDelay);
 
-        var ousiaPower = Owner.Creature.GetPower<OusiaPower>();
-        var pneumaPower = Owner.Creature.GetPower<PneumaPower>();
-
-        if (pneumaPower != null && pneumaPower.Amount > 0)
+        if (ArkheSystem.GetState(Owner.Creature, includeDualEffect: false) == ArkheState.Pneuma)
         {
             for (int i = 0; i < 3; i++)
             {

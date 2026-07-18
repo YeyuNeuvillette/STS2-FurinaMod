@@ -55,12 +55,11 @@ public sealed class InviteGuest : InviteCard
         if (creature.CombatState == null)
             return;
 
-        var ousiaPower = creature.GetPower<OusiaPower>();
-        var pneumaPower = creature.GetPower<PneumaPower>();
+        var state = ArkheSystem.GetState(creature, includeDualEffect: false);
 
         List<CardModel> options;
 
-        if (ousiaPower != null && ousiaPower.Amount > 0)
+        if (state == ArkheState.Ousia)
         {
             options = new List<CardModel>
             {
@@ -69,7 +68,7 @@ public sealed class InviteGuest : InviteCard
                 creature.CombatState.CreateCard<InviteSurintendanteChevalmarin>(Owner)
             };
         }
-        else if (pneumaPower != null && pneumaPower.Amount > 0)
+        else if (state == ArkheState.Pneuma)
         {
             options = new List<CardModel>
             {

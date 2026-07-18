@@ -31,6 +31,6 @@ public sealed class SeatsSacredAndSecular : BaseCard
 
     protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay cardPlay)
     {
-        await InvitationManager.SwitchArkhe(choiceContext, Owner, this);
+        await ArkheSystem.SwitchState(choiceContext, Owner, this);
     }
 }

@@ -44,7 +44,7 @@ public sealed class Transition : BaseCard
         GD.Print($"[Transition] Gaining {baseBlock} block");
         await CreatureCmd.GainBlock(creature, baseBlock, ValueProp.Move, cardPlay);
 
-        await InvitationManager.SwitchArkhe(choiceContext, Owner, this);
+        await ArkheSystem.SwitchState(choiceContext, Owner, this);
     }
 
     protected override void OnUpgrade()

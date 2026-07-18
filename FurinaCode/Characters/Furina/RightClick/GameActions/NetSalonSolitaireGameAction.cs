@@ -31,3 +31,26 @@ public struct NetSalonSolitaireGameAction : INetAction
         return $"{nameof(NetSalonSolitaireGameAction)} minion={MinionCombatId?.ToString() ?? "null"}";
     }
 }
+
+public struct NetMinionActGameAction : INetAction
+{
+    public uint MinionCombatId;
+    public uint? TargetCombatId;
+
+    public GameAction ToGameAction(Player player) =>
+        new MinionActGameAction(player, MinionCombatId, TargetCombatId);
+
+    public void Serialize(PacketWriter writer)
+    {
+        writer.WriteUInt(MinionCombatId, 6);
+        writer.WriteBool(TargetCombatId.HasValue);
+        if (TargetCombatId.HasValue)
+            writer.WriteUInt(TargetCombatId.Value, 6);
+    }
+
+    public void Deserialize(PacketReader reader)
+    {
+        MinionCombatId = reader.ReadUInt(6);
+        TargetCombatId = reader.ReadBool() ? reader.ReadUInt(6) : null;
+    }
+}

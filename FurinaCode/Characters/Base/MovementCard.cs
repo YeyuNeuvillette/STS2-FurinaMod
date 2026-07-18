@@ -28,29 +28,28 @@ public abstract class MovementCard(
     bool shouldShowInCardLibrary = true)
     : ModCardTemplate(energyCost, type, rarity, targetType, shouldShowInCardLibrary)
 {
-    private static readonly HashSet<string> _unlockedCardIdsThisCombat = new();
-
-    public static void ResetCombatState()
-    {
-        _unlockedCardIdsThisCombat.Clear();
-    }
-
     private string ArtFileName => $"{Id.Entry.ToCardArtFileName()}.png";
     private string LegacyArtFileName => $"{Id.Entry.ToLegacyCompactFileName()}.png";
     private string LegacyPrefixedArtFileName => $"{MainFile.ModId.ToLowerInvariant()}_{Id.Entry.ToLegacyCompactFileName()}.png";
 
-    protected abstract int[] TargetSequence { get; }
+    protected abstract IReadOnlyList<int> TargetSequence { get; }
     
     private int _currentIndex = 0;
     private bool _hasPlayedEffect = false;
 
-    private bool IsUnlocked => _unlockedCardIdsThisCombat.Contains(Id.Entry);
+    private bool IsUnlocked => MovementSystem.IsUnlocked(this);
 
-    protected override bool IsPlayable => IsUnlocked && base.IsPlayable;
+    protected override bool IsPlayable
+    {
+        get
+        {
+            UpdateSequenceProgress();
+            return IsUnlocked && base.IsPlayable;
+        }
+    }
 
     public override async Task AfterCombatEnd(CombatRoom room)
     {
-        _unlockedCardIdsThisCombat.Remove(Id.Entry);
         _currentIndex = 0;
         _hasPlayedEffect = false;
         await base.AfterCombatEnd(room);
@@ -120,28 +119,11 @@ public abstract class MovementCard(
 
         try
         {
-            var cardPlays = CombatManager.Instance.History.CardPlaysStarted
-                .Where(e => e != null && e.HappenedThisTurn(CombatState) && e.CardPlay?.Card?.Owner == Owner && e.CardPlay?.Card != this)
-                .ToList();
-
-            int newIndex = 0;
-            foreach (var cardPlay in cardPlays)
+            var newIndex = MovementSystem.CalculateProgress(this, TargetSequence);
+            if (newIndex >= TargetSequence.Count)
             {
-                var playedCardCost = cardPlay.CardPlay.Resources.EnergySpent;
-                
-                if (playedCardCost == TargetSequence[newIndex])
-                {
-                    newIndex++;
-                    if (newIndex >= TargetSequence.Length)
-                    {
-                        UnlockCard();
-                        return;
-                    }
-                }
-                else
-                {
-                    newIndex = 0;
-                }
+                UnlockCard();
+                return;
             }
 
             if (newIndex != _currentIndex)
@@ -157,7 +139,8 @@ public abstract class MovementCard(
 
     private void UnlockCard()
     {
-        _unlockedCardIdsThisCombat.Add(Id.Entry);
+        if (!MovementSystem.Unlock(this))
+            return;
         GD.Print($"[MovementCard] {Id.Entry} unlocked!");
         
         PlayUnlockEffect();
@@ -220,7 +203,7 @@ public abstract class MovementCard(
             return string.Empty;
             
         var parts = new List<string>();
-        for (int i = 0; i < TargetSequence.Length; i++)
+        for (int i = 0; i < TargetSequence.Count; i++)
         {
             if (i < _currentIndex)
             {
@@ -242,5 +225,57 @@ public abstract class MovementCard(
                 return candidate;
         }
         return candidates[^1];
+    }
+}
+
+internal static class MovementSystem
+{
+    private static readonly HashSet<(ulong playerId, string cardId)> UnlockedCards = [];
+
+    public static void ResetCombat() => UnlockedCards.Clear();
+
+    public static bool IsUnlocked(MovementCard card) =>
+        card.Owner != null && UnlockedCards.Contains((card.Owner.NetId, card.Id.Entry));
+
+    public static bool Unlock(MovementCard card)
+    {
+        return card.Owner != null && UnlockedCards.Add((card.Owner.NetId, card.Id.Entry));
+    }
+
+    public static int CalculateProgress(MovementCard card, IReadOnlyList<int> targetSequence)
+    {
+        if (card.CombatState == null || card.Owner == null || targetSequence.Count == 0)
+            return 0;
+
+        var costs = CombatManager.Instance.History.CardPlaysStarted
+            .Where(entry => entry != null
+                && entry.HappenedThisTurn(card.CombatState)
+                && entry.CardPlay?.Card?.Owner == card.Owner
+                && entry.CardPlay.Card != card)
+            .Select(entry => (int)entry.CardPlay.Resources.EnergySpent)
+            .ToList();
+
+        for (var start = 0; start < costs.Count; start++)
+        {
+            var matched = 0;
+            while (start + matched < costs.Count
+                && matched < targetSequence.Count
+                && costs[start + matched] == targetSequence[matched])
+            {
+                matched++;
+            }
+
+            if (matched == targetSequence.Count)
+                return matched;
+        }
+
+        var maxSuffix = Math.Min(costs.Count, targetSequence.Count - 1);
+        for (var length = maxSuffix; length > 0; length--)
+        {
+            if (costs.TakeLast(length).SequenceEqual(targetSequence.Take(length)))
+                return length;
+        }
+
+        return 0;
     }
 }

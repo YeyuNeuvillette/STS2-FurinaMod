@@ -19,9 +19,6 @@ namespace Furina.Characters.Furina;
 
 public static class InvitationManager
 {
-    public const string OusiaKey = "Ousia";
-    public const string PneumaKey = "Pneuma";
-
     private static readonly Type[] SalonMemberTypes =
     [
         typeof(GentilhommeUsher),
@@ -64,25 +61,6 @@ public static class InvitationManager
     public static Type SelectRandomSalonMember(Player player) =>
         player.RunState.Rng.CombatCardSelection.NextItem(SalonMemberTypes)!;
 
-    public static async Task SwitchArkhe(
-        PlayerChoiceContext choiceContext,
-        Player player,
-        CardModel? source)
-    {
-        var creature = player.Creature;
-        if (creature.HasPower<OusiaPower>())
-        {
-            await PowerCmd.Remove<OusiaPower>(creature);
-            await PowerCmd.Apply<PneumaPower>(choiceContext, creature, 1m, creature, source);
-        }
-        else
-        {
-            if (creature.HasPower<PneumaPower>())
-                await PowerCmd.Remove<PneumaPower>(creature);
-            await PowerCmd.Apply<OusiaPower>(choiceContext, creature, 1m, creature, source);
-        }
-    }
-
     public static IReadOnlySet<ModelId> GetOnSummonPowerIds(Type minionType)
     {
         if (minionType == typeof(GentilhommeUsher))
@@ -118,6 +96,7 @@ public static class InvitationManager
 
     public static async Task InviteOusia(PlayerChoiceContext choiceContext, Player player, CardModel? source, Type? minionType = null, bool isNewInvitation = true)
     {
+        EnsureInvitationCount(player);
         minionType ??= SelectRandomSalonMember(player);
         var existing = player.PlayerCombatState?.Pets.FirstOrDefault(p => p.Monster?.GetType() == minionType);
 
@@ -126,11 +105,12 @@ public static class InvitationManager
         else
             await EnhanceSalonMember(choiceContext, player, source, existing, minionType);
 
-        RecordInvitation(player, OusiaKey, isNewInvitation);
+        RecordInvitation(player, ArkheSystem.OusiaStorageKey, isNewInvitation);
     }
 
     public static async Task InvitePneuma(PlayerChoiceContext choiceContext, Player player, CardModel? source, bool isNewInvitation = true)
     {
+        EnsureInvitationCount(player);
         var singer = player.PlayerCombatState?.GetPet<SingerOfManyWaters>();
         if (singer == null)
         {
@@ -141,11 +121,12 @@ public static class InvitationManager
             await IncreaseHp(singer, 3m);
         }
 
-        RecordInvitation(player, PneumaKey, isNewInvitation);
+        RecordInvitation(player, ArkheSystem.PneumaStorageKey, isNewInvitation);
     }
 
     public static async Task FillMissingInvitations(PlayerChoiceContext choiceContext, Player player, CardModel? source, string state)
     {
+        EnsureInvitationCount(player);
         var key = (player.NetId, state);
         if (!FillingStates.Add(key))
             return;
@@ -158,8 +139,11 @@ public static class InvitationManager
 
             for (var i = 0; i < missing; i++)
             {
-                if (state == OusiaKey)
-                    await InviteOusia(choiceContext, player, source, isNewInvitation: false);
+                if (state == ArkheSystem.OusiaStorageKey)
+                {
+                    var minionType = SelectDeterministicSalonTarget(player, realized + i);
+                    await InviteOusia(choiceContext, player, source, minionType, isNewInvitation: false);
+                }
                 else
                     await InvitePneuma(choiceContext, player, source, isNewInvitation: false);
             }
@@ -168,6 +152,34 @@ public static class InvitationManager
         {
             FillingStates.Remove(key);
         }
+    }
+
+    private static void EnsureInvitationCount(Player player)
+    {
+        if (TotalInvitations.ContainsKey(player.NetId))
+            return;
+
+        var pets = player.PlayerCombatState?.Pets ?? [];
+        var singer = pets.FirstOrDefault(pet => pet.Monster is SingerOfManyWaters);
+        var total = singer != null
+            ? GetContribution(singer, ArkheSystem.PneumaStorageKey)
+            : pets.Where(IsSalonMember).Sum(pet => GetContribution(pet, ArkheSystem.OusiaStorageKey));
+
+        TotalInvitations[player.NetId] = total;
+        var activeState = singer != null ? ArkheSystem.PneumaStorageKey : ArkheSystem.OusiaStorageKey;
+        RealizedInvitations[(player.NetId, activeState)] = total;
+    }
+
+    private static Type SelectDeterministicSalonTarget(Player player, int realizedCount)
+    {
+        var existing = player.PlayerCombatState?.Pets
+            .Where(IsSalonMember)
+            .OrderBy(pet => pet.MaxHp)
+            .ThenBy(pet => Array.IndexOf(SalonMemberTypes, pet.Monster!.GetType()))
+            .FirstOrDefault();
+
+        return existing?.Monster?.GetType()
+            ?? SalonMemberTypes[Math.Abs(realizedCount) % SalonMemberTypes.Length];
     }
 
     public static bool OnMinionDeath(Creature creature)
@@ -180,8 +192,10 @@ public static class InvitationManager
             return false;
 
         var type = creature.Monster.GetType();
-        var state = type == typeof(SingerOfManyWaters) ? PneumaKey : OusiaKey;
-        if (state == OusiaKey && !SalonMemberTypes.Contains(type))
+        var state = type == typeof(SingerOfManyWaters)
+            ? ArkheSystem.PneumaStorageKey
+            : ArkheSystem.OusiaStorageKey;
+        if (state == ArkheSystem.OusiaStorageKey && !SalonMemberTypes.Contains(type))
             return false;
 
         var contribution = GetContribution(creature, state);
@@ -194,7 +208,9 @@ public static class InvitationManager
         var activeKey = (player.NetId, state);
         RealizedInvitations[activeKey] = Math.Max(0, RealizedInvitations.GetValueOrDefault(activeKey) - contribution);
 
-        var otherState = state == OusiaKey ? PneumaKey : OusiaKey;
+        var otherState = state == ArkheSystem.OusiaStorageKey
+            ? ArkheSystem.PneumaStorageKey
+            : ArkheSystem.OusiaStorageKey;
         var otherKey = (player.NetId, otherState);
         RealizedInvitations[otherKey] = Math.Max(0, RealizedInvitations.GetValueOrDefault(otherKey) - contribution);
         MinionStorage.ReduceStoredInvitations(player, otherState, contribution);
@@ -211,7 +227,7 @@ public static class InvitationManager
 
     private static int GetContribution(Creature creature, string state)
     {
-        if (state == PneumaKey)
+        if (state == ArkheSystem.PneumaStorageKey)
             return creature.MaxHp < 3m ? 0 : 1 + (int)((creature.MaxHp - 3m) / 3m);
 
         return Math.Max(1, (int)(creature.MaxHp / 3m));

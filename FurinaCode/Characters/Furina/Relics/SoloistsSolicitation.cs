@@ -29,7 +29,7 @@ public sealed class SoloistsSolicitation : BaseRelic
 
     public override async Task BeforeCombatStart()
     {
-        await PowerCmd.Apply<OusiaPower>(new ThrowingPlayerChoiceContext(), Owner.Creature, 1m, Owner.Creature, null);
+        await ArkheSystem.SetState(new ThrowingPlayerChoiceContext(), Owner, ArkheState.Ousia);
     }
 
     public override async Task BeforeHandDraw(Player player, PlayerChoiceContext choiceContext, ICombatState combatState)

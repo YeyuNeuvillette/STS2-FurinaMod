@@ -30,10 +30,10 @@ public abstract class InviteCard(
         if (Owner?.Creature == null)
             return;
 
-        if (Owner.Creature.HasPower<OusiaPower>())
-            await InvitationManager.InviteOusia(choiceContext, Owner, this, SelectMinionType(choiceContext));
-        else if (Owner.Creature.HasPower<PneumaPower>())
+        if (ArkheSystem.GetState(Owner.Creature, includeDualEffect: false) == ArkheState.Pneuma)
             await InvitationManager.InvitePneuma(choiceContext, Owner, this);
+        else
+            await InvitationManager.InviteOusia(choiceContext, Owner, this, SelectMinionType(choiceContext));
     }
 
     protected Task HandleOusiaState(PlayerChoiceContext choiceContext) =>

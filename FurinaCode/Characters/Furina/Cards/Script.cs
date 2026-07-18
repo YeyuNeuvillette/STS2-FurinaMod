@@ -2,19 +2,18 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Godot;
 using MegaCrit.Sts2.Core.Commands;
 using MegaCrit.Sts2.Core.Entities.Cards;
 using MegaCrit.Sts2.Core.Entities.Players;
 using MegaCrit.Sts2.Core.GameActions.Multiplayer;
 using MegaCrit.Sts2.Core.Localization.DynamicVars;
 using MegaCrit.Sts2.Core.Models.CardPools;
-using STS2RitsuLib.CardPiles;
 using STS2RitsuLib.Interop.AutoRegistration;
 using Furina.Characters.Base;
 using MegaCrit.Sts2.Core.Entities.Creatures;
 using MegaCrit.Sts2.Core.Combat;
 using STS2RitsuLib.Keywords;
+using MegaCrit.Sts2.Core.Rooms;
 
 namespace Furina.Characters.Furina.Cards;
 
@@ -42,100 +41,56 @@ public sealed class Script : BaseCard
 
     protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay cardPlay)
     {
-        GD.Print($"[Script] OnPlay called, CombatState: {CombatState != null}, Owner: {Owner}");
-        
         if (Owner?.PlayerCombatState == null)
             return;
 
-        var scriptPileType = GetScriptPileType();
-        var scriptPile = scriptPileType.GetPile(Owner);
-
-        GD.Print($"[Script] Script pile cards count: {scriptPile.Cards.Count}");
+        var scriptPile = TropeSystem.GetPile(Owner);
 
         if (scriptPile.Cards.Count == 0)
             return;
 
         var cardsToPlay = scriptPile.Cards.ToList();
-        GD.Print($"[Script] Playing {cardsToPlay.Count} cards from script pile");
-
-        GD.Print($"[Script] Before PlayFromScriptPile, _isPlayingFromScriptPile: {TropeCard._isPlayingFromScriptPile}");
-        using (TropeCard.PlayFromScriptPile())
+        using (TropeSystem.BeginReplay())
         {
-            GD.Print($"[Script] Inside PlayFromScriptPile, _isPlayingFromScriptPile: {TropeCard._isPlayingFromScriptPile}");
-            
-            for (int i = 0; i < cardsToPlay.Count; i++)
+            foreach (var card in cardsToPlay)
             {
-                var card = cardsToPlay[i];
-                GD.Print($"[Script] Playing card {i + 1}/{cardsToPlay.Count}: {card.Id.Entry}, CombatState: {card.CombatState != null}");
-                
                 if (CombatManager.Instance.IsOverOrEnding)
-                {
-                    GD.Print($"[Script] Combat ending, stopping playback");
                     break;
-                }
-                    
+
                 await CardCmd.AutoPlay(choiceContext, card, null, AutoPlayType.Default, skipXCapture: true, skipCardPileVisuals: false);
-                GD.Print($"[Script] Finished playing card {i + 1}/{cardsToPlay.Count}, _isPlayingFromScriptPile: {TropeCard._isPlayingFromScriptPile}");
             }
-            
-            GD.Print($"[Script] Before disposing PlayFromScriptPile, _isPlayingFromScriptPile: {TropeCard._isPlayingFromScriptPile}");
         }
-        GD.Print($"[Script] After PlayFromScriptPile, _isPlayingFromScriptPile: {TropeCard._isPlayingFromScriptPile}");
-        
-        GD.Print($"[Script] OnPlay completed");
     }
 
-    internal void EnsureScriptPileSubscription()
+    internal void BindToScriptPile()
     {
-        GD.Print($"[Script] EnsureScriptPileSubscription called, _hasSubscribed: {_hasSubscribed}");
-        
         if (Owner?.PlayerCombatState == null)
-        {
-            GD.Print($"[Script] Owner or PlayerCombatState is null");
             return;
-        }
 
         if (_hasSubscribed)
-        {
-            GD.Print($"[Script] Already subscribed, skipping");
             return;
-        }
 
-        var scriptPileType = GetScriptPileType();
-        var scriptPile = scriptPileType.GetPile(Owner);
-        
-        GD.Print($"[Script] Script pile: {scriptPile.Type}, Cards count: {scriptPile.Cards.Count}");
+        var scriptPile = TropeSystem.GetPile(Owner);
         
         if (scriptPile != _scriptPile)
         {
-            GD.Print($"[Script] Subscribing to script pile ContentsChanged");
-            
             if (_scriptPile != null)
-            {
                 _scriptPile.ContentsChanged -= OnScriptPileContentsChanged;
-            }
             
             _scriptPile = scriptPile;
             
-            if (_scriptPile != null)
-            {
-                _scriptPile.ContentsChanged += OnScriptPileContentsChanged;
-                _hasSubscribed = true;
-                GD.Print($"[Script] Subscription successful, triggering initial energy cost update");
-                OnScriptPileContentsChanged();
-            }
+            _scriptPile.ContentsChanged += OnScriptPileContentsChanged;
+            _hasSubscribed = true;
+            OnScriptPileContentsChanged();
         }
     }
 
     private void OnScriptPileContentsChanged()
     {
-        GD.Print($"[Script] OnScriptPileContentsChanged called");
-        
         if (Owner?.PlayerCombatState == null)
             return;
-            
-        var scriptPileType = GetScriptPileType();
-        var scriptPile = scriptPileType.GetPile(Owner);
+
+        var scriptPile = TropeSystem.GetPile(Owner);
         
         var totalCost = scriptPile.Cards
             .Select(card => card.EnergyCost.GetWithModifiers(CostModifiers.All))
@@ -143,25 +98,15 @@ public sealed class Script : BaseCard
         
         var finalCost = Math.Min(totalCost, 3);
         
-        GD.Print($"[Script] Calculated total cost: {totalCost}, setting to: {finalCost}");
-        
-        try
-        {
-            EnergyCost.SetCustomBaseCost(finalCost);
-            GD.Print($"[Script] Energy cost set successfully");
-        }
-        catch (Exception ex)
-        {
-            GD.PrintErr($"[Script] Error setting energy cost: {ex.Message}");
-        }
+        EnergyCost.SetCustomBaseCost(finalCost);
     }
 
-    private static PileType GetScriptPileType()
+    public override async Task AfterCombatEnd(CombatRoom room)
     {
-        if (ModCardPileRegistry.TryGet("FURINA_CARDPILE_SCRIPT", out var definition))
-        {
-            return definition.PileType;
-        }
-        return PileType.Discard;
+        if (_scriptPile != null)
+            _scriptPile.ContentsChanged -= OnScriptPileContentsChanged;
+        _scriptPile = null;
+        _hasSubscribed = false;
+        await base.AfterCombatEnd(room);
     }
 }

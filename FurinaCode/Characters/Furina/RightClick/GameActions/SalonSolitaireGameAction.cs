@@ -5,6 +5,7 @@ using MegaCrit.Sts2.Core.Entities.Players;
 using MegaCrit.Sts2.Core.GameActions;
 using MegaCrit.Sts2.Core.GameActions.Multiplayer;
 using MinionLib.Powers;
+using MinionLib.Action;
 
 namespace Furina.Characters.Furina.RightClick.GameActions;
 
@@ -79,4 +80,62 @@ public sealed class SalonSolitaireGameAction : GameAction
     {
         return $"{nameof(SalonSolitaireGameAction)} owner={OwnerId} minion={MinionCombatId?.ToString() ?? "null"}";
     }
+}
+
+public sealed class MinionActGameAction : GameAction
+{
+    private Player Owner { get; }
+    private uint MinionCombatId { get; }
+    private uint? TargetCombatId { get; }
+
+    public override ulong OwnerId => Owner.NetId;
+    public override GameActionType ActionType => GameActionType.CombatPlayPhaseOnly;
+
+    public MinionActGameAction(Player owner, Creature minion, Creature? target)
+        : this(owner, minion.CombatId ?? throw new InvalidOperationException("Minion has no combat id."), target?.CombatId)
+    {
+    }
+
+    public MinionActGameAction(Player owner, uint minionCombatId, uint? targetCombatId)
+    {
+        Owner = owner;
+        MinionCombatId = minionCombatId;
+        TargetCombatId = targetCombatId;
+    }
+
+    protected override async Task ExecuteAction()
+    {
+        var combatState = Owner.Creature.CombatState;
+        if (combatState == null)
+        {
+            Cancel();
+            return;
+        }
+
+        var minion = await combatState.GetCreatureAsync(MinionCombatId, 10.0);
+        var action = minion?.Powers.OfType<ActionModel>()
+            .FirstOrDefault(candidate => !candidate.OnlyRespondIconClick && candidate.CanAct(combatState));
+        if (minion == null || action == null)
+        {
+            Cancel();
+            return;
+        }
+
+        Creature? target = null;
+        if (TargetCombatId.HasValue)
+            target = await combatState.GetCreatureAsync(TargetCombatId.Value, 10.0);
+        if (target != null && !action.IsValidTarget(combatState, target))
+        {
+            Cancel();
+            return;
+        }
+
+        await action.TryAct(new GameActionPlayerChoiceContext(this), target);
+    }
+
+    public override INetAction ToNetAction() => new NetMinionActGameAction
+    {
+        MinionCombatId = MinionCombatId,
+        TargetCombatId = TargetCombatId
+    };
 }

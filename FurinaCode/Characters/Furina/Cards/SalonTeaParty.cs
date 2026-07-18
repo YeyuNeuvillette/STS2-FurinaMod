@@ -33,16 +33,15 @@ public sealed class SalonTeaParty : InviteCard
         if (CurrentUpgradeLevel > 0)
             x++;
 
-        var ousiaPower = Owner.Creature.GetPower<OusiaPower>();
-        var pneumaPower = Owner.Creature.GetPower<PneumaPower>();
+        var state = ArkheSystem.GetState(Owner.Creature, includeDualEffect: false);
 
         for (int i = 0; i < x; i++)
         {
-            if (ousiaPower != null && ousiaPower.Amount > 0)
+            if (state == ArkheState.Ousia)
             {
                 await HandleOusiaState(choiceContext);
             }
-            else if (pneumaPower != null && pneumaPower.Amount > 0)
+            else if (state == ArkheState.Pneuma)
             {
                 await HandlePneumaState(choiceContext);
             }

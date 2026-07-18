@@ -30,13 +30,6 @@ public abstract class OusiaPneumaCard(
     private ArkheState _currentArkheState = ArkheState.None;
     private bool _forceNoneState;
 
-    public enum ArkheState
-    {
-        None,
-        Ousia,
-        Pneuma
-    }
-
     public ArkheState CurrentArkheState
     {
         get => _currentArkheState;
@@ -292,24 +285,9 @@ public abstract class OusiaPneumaCard(
 
             var creature = Owner.Creature;
 
-            if (ArkheDualEffectHelper.HasActiveProvider(creature))
-            {
-                CurrentArkheState = ArkheState.None;
-                return;
-            }
-
-            if (creature.HasPower<OusiaPower>())
-            {
-                CurrentArkheState = ArkheState.Ousia;
-            }
-            else if (creature.HasPower<PneumaPower>())
-            {
-                CurrentArkheState = ArkheState.Pneuma;
-            }
-            else
-            {
-                CurrentArkheState = ArkheState.None;
-            }
+            CurrentArkheState = _forceNoneState
+                ? ArkheState.None
+                : ArkheSystem.GetState(creature);
         }
         catch (System.Exception ex)
         {
@@ -373,7 +351,7 @@ public abstract class OusiaPneumaCard(
         }
 
         var creature = Owner.Creature;
-        var dualEffectProvider = ArkheDualEffectHelper.GetFirstActiveProvider(creature);
+        var dualEffectProvider = ArkheSystem.GetDualEffectProvider(creature);
 
         UpdateArkheState();
 
@@ -432,7 +410,7 @@ public abstract class OusiaPneumaCard(
     {
         await base.AfterPowerAmountChanged(choiceContext, power, amount, applier, cardSource);
         
-        if (power is OusiaPower || power is PneumaPower)
+        if (ArkheSystem.IsArkhePower(power))
         {
             UpdateArkheState();
         }

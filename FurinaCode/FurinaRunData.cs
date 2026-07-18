@@ -185,7 +185,7 @@ public static class MinionStorage
         if (amount <= 0 || !_storedMinions.TryGetValue((player.NetId, storageKey), out var minions))
             return;
 
-        if (storageKey == InvitationManager.PneumaKey)
+        if (storageKey == ArkheSystem.PneumaStorageKey)
         {
             var singer = minions.FirstOrDefault(m => m.MinionType == typeof(SingerOfManyWaters));
             if (singer == null)

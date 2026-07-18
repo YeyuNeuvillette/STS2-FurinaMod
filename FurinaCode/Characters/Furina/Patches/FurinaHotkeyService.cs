@@ -14,6 +14,7 @@ using MegaCrit.Sts2.Core.Nodes.Rooms;
 using MegaCrit.Sts2.Core.Runs;
 using MinionLib.Action;
 using Furina.Characters.Furina.Minions;
+using Furina.Characters.Furina.RightClick.GameActions;
 using STS2RitsuLib;
 using STS2RitsuLib.RuntimeInput;
 using STS2RitsuLib.Settings;
@@ -293,8 +294,7 @@ public static class FurinaHotkeyService
 
         if (targetType == TargetType.None)
         {
-            actionPower.Flash();
-            await actionPower.TryAct(new ThrowingPlayerChoiceContext(), null);
+            EnqueueMinionAction(actor, null);
             return;
         }
 
@@ -303,14 +303,13 @@ public static class FurinaHotkeyService
 
         if (!targetType.IsSingleTarget())
         {
-            actionPower.Flash();
-            await actionPower.TryAct(new ThrowingPlayerChoiceContext(), null);
+            EnqueueMinionAction(actor, null);
             return;
         }
 
         if (targetType == TargetType.Self)
         {
-            await actionPower.TryAct(new ThrowingPlayerChoiceContext(), null);
+            EnqueueMinionAction(actor, null);
             return;
         }
 
@@ -328,11 +327,20 @@ public static class FurinaHotkeyService
             var target = targetNode.Entity;
             if (!actionPower.IsValidTarget(combatState, target)) return;
 
-            await actionPower.TryAct(new ThrowingPlayerChoiceContext(), target);
+            EnqueueMinionAction(actor, target);
         }
         finally
         {
             actionPower.StopPulsing();
         }
+    }
+
+    private static void EnqueueMinionAction(Creature minion, Creature? target)
+    {
+        if (minion.PetOwner is not { } owner)
+            return;
+
+        RunManager.Instance.ActionQueueSynchronizer.RequestEnqueue(
+            new MinionActGameAction(owner, minion, target));
     }
 }

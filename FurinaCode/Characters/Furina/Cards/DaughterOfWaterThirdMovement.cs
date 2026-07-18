@@ -14,7 +14,9 @@ namespace Furina.Characters.Furina.Cards;
 [RegisterCard(typeof(FurinaCardPool))]
 public sealed class DaughterOfWaterThirdMovement : MovementCard
 {
-    protected override int[] TargetSequence => new[] { 2, 1, 0 };
+    private static readonly int[] Sequence = [2, 1, 0];
+
+    protected override IReadOnlyList<int> TargetSequence => Sequence;
 
     public override IEnumerable<CardKeyword> CanonicalKeywords => new List<CardKeyword>
     {

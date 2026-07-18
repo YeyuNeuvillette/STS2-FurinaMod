@@ -16,9 +16,10 @@ public abstract class ArkheInvitationPower : FurinaPower
 {
     private static readonly HashSet<(ulong playerId, string state)> SettingUp = [];
 
-    protected abstract string StorageKey { get; }
-    protected abstract string OtherStorageKey { get; }
-    protected abstract bool IsOusia { get; }
+    protected abstract ArkheState State { get; }
+
+    private string StorageKey => ArkheSystem.GetStorageKey(State);
+    private string OtherStorageKey => ArkheSystem.GetStorageKey(ArkheSystem.GetOpposite(State));
 
     public override PowerType Type => PowerType.None;
     public override PowerStackType StackType => PowerStackType.None;
@@ -104,22 +105,18 @@ public abstract class ArkheInvitationPower : FurinaPower
     {
         var creatureNode = NCombatRoom.Instance?.GetCreatureNode(Owner);
         if (creatureNode?.Visuals is FurinaCreatureVisuals visuals)
-            visuals.SetArkheState(IsOusia);
+            visuals.SetArkheState(State == ArkheState.Ousia);
     }
 }
 
 [RegisterPower]
 public sealed class OusiaPower : ArkheInvitationPower
 {
-    protected override string StorageKey => InvitationManager.OusiaKey;
-    protected override string OtherStorageKey => InvitationManager.PneumaKey;
-    protected override bool IsOusia => true;
+    protected override ArkheState State => ArkheState.Ousia;
 }
 
 [RegisterPower]
 public sealed class PneumaPower : ArkheInvitationPower
 {
-    protected override string StorageKey => InvitationManager.PneumaKey;
-    protected override string OtherStorageKey => InvitationManager.OusiaKey;
-    protected override bool IsOusia => false;
+    protected override ArkheState State => ArkheState.Pneuma;
 }

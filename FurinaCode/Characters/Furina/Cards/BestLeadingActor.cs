@@ -25,6 +25,9 @@ namespace Furina.Characters.Furina.Cards;
 [RegisterCard(typeof(FurinaCardPool))]
 public sealed class BestLeadingActor : FurinaCard
 {
+    private bool _isPneumaActive = true;
+
+    public bool IsPneumaActive => _isPneumaActive;
     protected override IEnumerable<DynamicVar> CanonicalVars => new List<DynamicVar>
     {
         new PowerVar<BestLeadingActorPower>(1m)
@@ -44,7 +47,7 @@ public sealed class BestLeadingActor : FurinaCard
     protected override void AddExtraArgsToDescription(LocString description)
     {
         base.AddExtraArgsToDescription(description);
-        description.Add("CurrentArkhe", BestLeadingActorPower.GlobalIsPneumaActive ? "[color=#FFFF00]芒性[/color]" : "[purple]荒性[/purple]");
+        description.Add("CurrentArkhe", _isPneumaActive ? "[color=#FFFF00]芒性[/color]" : "[purple]荒性[/purple]");
     }
 
     public void PlayTransformVfx()
@@ -77,7 +80,7 @@ public sealed class BestLeadingActor : FurinaCard
         if (side != CombatSide.Player || Pile == null || Pile.Type != PileType.Hand)
             return;
 
-        BestLeadingActorPower.ToggleGlobalState();
+        _isPneumaActive = !_isPneumaActive;
         PlayTransformVfx();
     }
 
@@ -87,7 +90,8 @@ public sealed class BestLeadingActor : FurinaCard
             return;
 
         await CreatureCmd.TriggerAnim(Owner.Creature, "Cast", Owner.Character.CastAnimDelay);
-        await PowerCmd.Apply<BestLeadingActorPower>(choiceContext, Owner.Creature, DynamicVars["BestLeadingActorPower"].BaseValue, Owner.Creature, this);
+        var power = await PowerCmd.Apply<BestLeadingActorPower>(choiceContext, Owner.Creature, DynamicVars["BestLeadingActorPower"].BaseValue, Owner.Creature, this);
+        power?.SetPneumaState(_isPneumaActive);
     }
 
     protected override void OnUpgrade()

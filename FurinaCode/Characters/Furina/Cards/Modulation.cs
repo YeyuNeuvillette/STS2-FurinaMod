@@ -9,6 +9,7 @@ using MegaCrit.Sts2.Core.Localization.DynamicVars;
 using MegaCrit.Sts2.Core.Models.Powers;
 using MegaCrit.Sts2.Core.ValueProps;
 using STS2RitsuLib.Interop.AutoRegistration;
+using Furina.Characters.Furina.Powers;
 using Furina.Characters.Furina;
 
 namespace Furina.Characters.Furina.Cards;

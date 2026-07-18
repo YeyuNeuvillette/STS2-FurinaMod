@@ -31,14 +31,7 @@ public sealed class LetThePeopleRejoice : BaseRelic
 
     public override async Task BeforeCombatStart()
     {
-        var creature = Owner.Creature;
-        if (creature.HasPower<PneumaPower>())
-            await PowerCmd.Remove<PneumaPower>(creature);
-
-        if (!creature.HasPower<OusiaPower>())
-            await PowerCmd.Apply<OusiaPower>(new ThrowingPlayerChoiceContext(), creature, 1m, creature, null);
-
-        creature.PowerApplied += OnPowerApplied;
+        await ArkheSystem.SetState(new ThrowingPlayerChoiceContext(), Owner, ArkheState.Ousia);
     }
 
     public override async Task BeforeHandDraw(Player player, PlayerChoiceContext choiceContext, ICombatState combatState)
@@ -53,11 +46,17 @@ public sealed class LetThePeopleRejoice : BaseRelic
         await CardPileCmd.AddGeneratedCardToCombat(card, PileType.Hand, Owner);
     }
 
-    private void OnPowerApplied(PowerModel power)
+    public override async Task AfterPowerAmountChanged(
+        PlayerChoiceContext choiceContext,
+        PowerModel power,
+        decimal amount,
+        Creature? applier,
+        CardModel? cardSource)
     {
-        if (power is not (OusiaPower or PneumaPower) || power.Owner != Owner?.Creature)
+        await base.AfterPowerAmountChanged(choiceContext, power, amount, applier, cardSource);
+        if (!ArkheSystem.IsArkhePower(power) || power.Owner != Owner?.Creature || amount <= 0m)
             return;
 
-        TaskHelper.RunSafely(PlayerCmd.GainEnergy(1m, Owner));
+        await PlayerCmd.GainEnergy(1m, Owner);
     }
 }

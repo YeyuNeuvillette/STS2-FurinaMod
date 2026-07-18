@@ -20,7 +20,7 @@ public static class SufferingHolySonManager
         RitsuLibFramework.SubscribeLifecycle<ActEnteredEvent>(OnActEntered);
     }
 
-    private static async void OnCombatStarting(CombatStartingEvent evt)
+    private static void OnCombatStarting(CombatStartingEvent evt)
     {
         if (evt.CombatState is not CombatState combatState)
             return;
@@ -43,7 +43,7 @@ public static class SufferingHolySonManager
             foreach (var enemy in enemies)
             {
                 int targetMaxHp = Math.Max(1, enemy.MaxHp - data.BossMaxHpReduction);
-                await CreatureCmd.SetMaxHp(enemy, targetMaxHp);
+                enemy.SetMaxHpInternal(targetMaxHp);
             }
         }
     }
