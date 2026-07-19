@@ -4,6 +4,7 @@ using HarmonyLib;
 using MegaCrit.Sts2.Core.HoverTips;
 using MegaCrit.Sts2.Core.Models;
 using MinionLib.Action;
+using Furina.Characters.Furina.Systems;
 
 namespace Furina.Characters.Furina.Patches;
 

@@ -8,6 +8,6 @@ public static class RewardGenerationPatch
 {
     public static void Postfix(RewardsSet __instance)
     {
-        RewardModifierBus.RunAll(__instance.Player, __instance.Rewards, __instance.Room);
+        global::Furina.Api.Rewards.RewardModifierBus.RunAll(__instance.Player, __instance.Rewards, __instance.Room);
     }
 }

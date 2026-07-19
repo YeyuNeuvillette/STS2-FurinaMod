@@ -1,5 +1,4 @@
 using MegaCrit.Sts2.Core.Combat;
-using MegaCrit.Sts2.Core.Context;
 using MegaCrit.Sts2.Core.Entities.Creatures;
 using MegaCrit.Sts2.Core.Models;
 using MinionLib.Action;
@@ -13,22 +12,22 @@ public sealed class AnyPlayerTargetType : ICustomTargetType
 
     public bool IsValidTargetPreview(Creature target)
     {
-        return IsValidTarget(target) && LocalContext.IsMe(target);
+        return IsValidTarget(target);
     }
 
     public bool IsValidTarget(CardModel card, Creature target)
     {
-        return IsValidTarget(target) && target.Player == card.Owner;
+        return IsValidTarget(target);
     }
 
     public bool IsValidTarget(PotionModel potion, Creature target)
     {
-        return IsValidTarget(target) && target.Player == potion.Owner;
+        return IsValidTarget(target);
     }
 
     public bool IsValidTarget(ActionModel action, Creature target)
     {
-        return IsValidTarget(target) && target.Player == action.Owner.PetOwner;
+        return IsValidTarget(target);
     }
 
     private static bool IsValidTarget(Creature target)

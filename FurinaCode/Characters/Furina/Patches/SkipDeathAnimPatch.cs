@@ -12,44 +12,40 @@ namespace Furina.Characters.Furina.Patches;
 [HarmonyPatch(typeof(NCreature), nameof(NCreature.StartDeathAnim))]
 public static class SkipDeathAnimPatch
 {
-    private static readonly HashSet<uint?> _skipDeathAnimCreatures = new();
+    private static readonly HashSet<uint> _skipDeathAnimCreatureIds = new();
     private static readonly Task _completedTask = Task.CompletedTask;
 
     public static void RegisterCreatureToSkipDeathAnim(Creature creature)
     {
-        if (creature != null)
+        if (creature?.CombatId is uint combatId)
         {
-            _skipDeathAnimCreatures.Add(creature.CombatId);
+            _skipDeathAnimCreatureIds.Add(combatId);
         }
     }
 
     public static void UnregisterCreatureToSkipDeathAnim(Creature creature)
     {
-        if (creature != null)
+        if (creature?.CombatId is uint combatId)
         {
-            _skipDeathAnimCreatures.Remove(creature.CombatId);
+            _skipDeathAnimCreatureIds.Remove(combatId);
         }
     }
 
     public static void ClearAll()
     {
-        _skipDeathAnimCreatures.Clear();
+        _skipDeathAnimCreatureIds.Clear();
     }
 
     [HarmonyPrefix]
     private static bool Prefix(NCreature __instance, bool shouldRemove)
     {
-        if (__instance.Entity == null)
+        if (__instance.Entity?.CombatId is not uint combatId)
         {
             return true;
         }
         
-        GD.Print($"[SkipDeathAnimPatch] Prefix called for {__instance.Entity.Name}, CombatId: {__instance.Entity.CombatId}, shouldRemove: {shouldRemove}");
-        GD.Print($"[SkipDeathAnimPatch] Skip list contains: {_skipDeathAnimCreatures.Contains(__instance.Entity.CombatId)}");
-        
-        if (_skipDeathAnimCreatures.Contains(__instance.Entity.CombatId))
+        if (_skipDeathAnimCreatureIds.Remove(combatId))
         {
-            _skipDeathAnimCreatures.Remove(__instance.Entity.CombatId);
             GD.Print($"[SkipDeathAnimPatch] Skipping death animation for {__instance.Entity.Name}");
             
             __instance.Hitbox.FocusMode = FocusModeEnum.None;

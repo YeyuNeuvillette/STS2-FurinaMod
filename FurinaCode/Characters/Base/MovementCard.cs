@@ -73,18 +73,19 @@ public abstract class MovementCard(
         
         try
         {
-            UpdateSequenceProgress();
+            if (!IsCanonical)
+                UpdateSequenceProgress();
             description.Add("SequenceProgress", BuildSequenceString());
         }
         catch (Exception ex)
         {
             GD.PrintErr($"[MovementCard] SequenceProgress error: {ex.Message}");
-            description.Add("SequenceProgress", $"[gold]乐章[/gold]：［{string.Join("-", TargetSequence.Select(_ => $"[color=#808080]?[/color]"))}］\n");
+            description.Add("SequenceProgress", BuildStaticSequenceString());
         }
     }
 
     public override string CustomPortraitPath =>
-        ResolveExistingPath(
+        AssetPathResolver.ResolveExisting(
             ArtFileName.BigCardsImagePath(),
             ArtFileName.CardsImagePath(),
             LegacyPrefixedArtFileName.BigCardsImagePath(),
@@ -95,7 +96,7 @@ public abstract class MovementCard(
             "card.png".CardsImagePath());
 
     public override string PortraitPath =>
-        ResolveExistingPath(
+        AssetPathResolver.ResolveExisting(
             ArtFileName.CardsImagePath(),
             ArtFileName.BigCardsImagePath(),
             LegacyPrefixedArtFileName.CardsImagePath(),
@@ -106,7 +107,7 @@ public abstract class MovementCard(
             "card.png".BigCardsImagePath());
 
     public override string? CustomBetaPortraitPath =>
-        ResolveExistingPath(
+        AssetPathResolver.ResolveExisting(
             ArtFileName.CardBetaImagePath(),
             LegacyPrefixedArtFileName.CardBetaImagePath(),
             LegacyArtFileName.CardBetaImagePath(),
@@ -114,7 +115,7 @@ public abstract class MovementCard(
 
     private void UpdateSequenceProgress()
     {
-        if (IsUnlocked || CombatState == null || Owner == null)
+        if (IsCanonical || IsUnlocked || CombatState == null || Owner == null)
             return;
 
         try
@@ -199,7 +200,7 @@ public abstract class MovementCard(
 
     private string BuildSequenceString()
     {
-        if (IsUnlocked)
+        if (!IsCanonical && IsUnlocked)
             return string.Empty;
             
         var parts = new List<string>();
@@ -217,15 +218,8 @@ public abstract class MovementCard(
         return $"[gold]乐章[/gold]：［{string.Join("-", parts)}］\n";
     }
 
-    private static string ResolveExistingPath(params string[] candidates)
-    {
-        foreach (var candidate in candidates)
-        {
-            if (ResourceLoader.Exists(candidate))
-                return candidate;
-        }
-        return candidates[^1];
-    }
+    private string BuildStaticSequenceString() =>
+        $"[gold]乐章[/gold]：［{string.Join("-", TargetSequence.Select(value => $"[color=#808080]{value}[/color]"))}］\n";
 }
 
 internal static class MovementSystem

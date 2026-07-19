@@ -21,7 +21,7 @@ using STS2RitsuLib.Settings;
 using STS2RitsuLib.Utils;
 using STS2RitsuLib.Utils.Persistence;
 
-namespace Furina.Characters.Furina.Patches;
+namespace Furina.Characters.Furina.Systems;
 
 public sealed class FurinaHotkeySettings
 {

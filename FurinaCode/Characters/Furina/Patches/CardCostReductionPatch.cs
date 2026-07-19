@@ -9,6 +9,8 @@ namespace Furina.Characters.Furina.Patches;
 [HarmonyPatch]
 public static class CardCostReductionPatch
 {
+    private static readonly FieldInfo? CardField = AccessTools.Field(typeof(CardEnergyCost), "_card");
+
     private static MethodBase? TargetMethod()
     {
         return AccessTools.Method(typeof(CardEnergyCost), "GetWithModifiers");
@@ -19,7 +21,7 @@ public static class CardCostReductionPatch
         if (__result <= 0)
             return;
 
-        var card = AccessTools.Field(typeof(CardEnergyCost), "_card")?.GetValue(__instance) as CardModel;
+        var card = CardField?.GetValue(__instance) as CardModel;
         if (card == null || card.IsCanonical)
             return;
 

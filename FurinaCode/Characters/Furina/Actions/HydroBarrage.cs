@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Godot;
 using MegaCrit.Sts2.Core.Combat;
 using MegaCrit.Sts2.Core.Commands;
 using MegaCrit.Sts2.Core.Entities.Creatures;
@@ -32,6 +31,8 @@ public sealed class HydroBarrage : ModActionTemplate
 
     public override int DisplayAmount => base.DynamicVars[_usesKey].IntValue;
 
+    public int IntentDamage => Math.Max(0, base.DynamicVars[_damageKey].IntValue);
+
     protected override IEnumerable<DynamicVar> CanonicalVars => new List<DynamicVar> 
     { 
         new DynamicVar(_usesKey, 1m),
@@ -48,9 +49,7 @@ public sealed class HydroBarrage : ModActionTemplate
     {
         var actor = Owner;
         var usesValue = base.DynamicVars[_usesKey].BaseValue;
-        var result = usesValue > 0m && actor.IsAlive && actor.CombatState == combatState;
-        GD.Print($"[MinionAction] HydroBarrage.CanAct: Uses={usesValue}, Owner.IsAlive={actor.IsAlive}, Owner.CombatState==combatState={actor.CombatState == combatState}, result={result}");
-        return result;
+        return usesValue > 0m && actor.IsAlive && actor.CombatState == combatState;
     }
 
     public override Task AfterSideTurnStart(CombatSide side, IReadOnlyList<Creature> participants, ICombatState combatState)

@@ -63,5 +63,11 @@
   "FURINA_POWER_WATER_AND_JUSTICE_POWER.smartDescription": "At the end of combat, remove \"Water and Justice\" from your deck.",
   "FURINA_POWER_BLANK_SPACE_POWER.title": "Blank Space",
   "FURINA_POWER_BLANK_SPACE_POWER.description": "You will not receive card rewards at the end of combat.",
-  "FURINA_POWER_BLANK_SPACE_POWER.smartDescription": "You will not receive card rewards at the end of combat."
+  "FURINA_POWER_BLANK_SPACE_POWER.smartDescription": "You will not receive card rewards at the end of combat.",
+  "FURINA_POWER_PURITY_WITHOUT_TAINT_POWER.title": "Purity Without Taint",
+  "FURINA_POWER_PURITY_WITHOUT_TAINT_POWER.description": "You cannot generate cards during combat.",
+  "FURINA_POWER_PURITY_WITHOUT_TAINT_POWER.smartDescription": "You cannot generate cards during combat.",
+  "FURINA_POWER_UNCEASING_SOLO_DANCE_POWER.title": "Unceasing Solo Dance",
+  "FURINA_POWER_UNCEASING_SOLO_DANCE_POWER.description": "Whenever you have no cards in [gold]Hand[/gold] during your turn, draw {Amount} {Amount:plural:card|cards}.",
+  "FURINA_POWER_UNCEASING_SOLO_DANCE_POWER.smartDescription": "Whenever you have no cards in [gold]Hand[/gold] during your turn, draw {Amount} {Amount:plural:card|cards}."
 }

@@ -41,8 +41,22 @@ public sealed class ChorusPower : FurinaPower, IArkheDualEffectProvider
         ArkheSystem.RefreshHand(oldOwner);
     }
 
+    public override async Task AfterPowerAmountChanged(
+        PlayerChoiceContext choiceContext,
+        PowerModel power,
+        decimal amount,
+        Creature? applier,
+        CardModel? cardSource)
+    {
+        await base.AfterPowerAmountChanged(choiceContext, power, amount, applier, cardSource);
+
+        if (ReferenceEquals(power, this))
+            ArkheSystem.RefreshHand(Owner);
+    }
+
     public async Task OnArkheCardPlayed(PlayerChoiceContext choiceContext, CardModel cardSource)
     {
         await PowerCmd.ModifyAmount(choiceContext, this, -1m, Owner, cardSource);
+        ArkheSystem.RefreshHand(Owner);
     }
 }

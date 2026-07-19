@@ -3,48 +3,29 @@ using MegaCrit.Sts2.Core.Models;
 
 namespace Furina.Characters.Furina.Patches;
 
+[Obsolete("Use Furina.Api.Cards.CardUpgradeEventBus instead.")]
 public static class CardUpgradeEventBus
 {
-    private static event Action<CardModel>? _anyCardUpgraded;
-    private static bool _isPropagating;
-
-    internal static int Generation { get; private set; }
+    internal static int Generation => global::Furina.Api.Cards.CardUpgradeEventBus.Generation;
 
     public static event Action<CardModel> AnyCardUpgraded
     {
-        add => _anyCardUpgraded += value;
-        remove => _anyCardUpgraded -= value;
+        add => global::Furina.Api.Cards.CardUpgradeEventBus.AnyCardUpgraded += value;
+        remove => global::Furina.Api.Cards.CardUpgradeEventBus.AnyCardUpgraded -= value;
     }
 
     internal static void NotifyCardUpgraded(CardModel card)
     {
-        if (_isPropagating)
-            return;
-        _anyCardUpgraded?.Invoke(card);
+        global::Furina.Api.Cards.CardUpgradeEventBus.NotifyCardUpgraded(card);
     }
 
     internal static void PropagateUpgrade(Action upgradeAction)
     {
-        if (_isPropagating)
-        {
-            upgradeAction();
-            return;
-        }
-        _isPropagating = true;
-        try
-        {
-            upgradeAction();
-        }
-        finally
-        {
-            _isPropagating = false;
-        }
+        global::Furina.Api.Cards.CardUpgradeEventBus.PropagateUpgrade(upgradeAction);
     }
 
     internal static void Clear()
     {
-        _anyCardUpgraded = null;
-        _isPropagating = false;
-        Generation++;
+        global::Furina.Api.Cards.CardUpgradeEventBus.Clear();
     }
 }

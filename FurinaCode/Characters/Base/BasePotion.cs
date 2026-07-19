@@ -1,4 +1,3 @@
-using Godot;
 using STS2RitsuLib.Scaffolding.Content;
 using Furina.Extensions;
 
@@ -14,27 +13,16 @@ public abstract class BasePotion : ModPotionTemplate
     private string PrefixedOutlineFileName => $"{MainFile.ModId.ToLowerInvariant()}_potion_{Id.Entry.ToLegacyCompactFileName()}_outline.png";
 
     public override string? CustomImagePath =>
-        ResolveExistingPath(
+        AssetPathResolver.ResolveExisting(
             ArtFileName.PotionImagePath(),
             PrefixedArtFileName.PotionImagePath(),
             LegacyArtFileName.PotionImagePath(),
             "potion.png".PotionImagePath());
 
     public override string? CustomOutlinePath =>
-        ResolveExistingPath(
+        AssetPathResolver.ResolveExisting(
             OutlineFileName.PotionImagePath(),
             PrefixedOutlineFileName.PotionImagePath(),
             LegacyOutlineFileName.PotionImagePath(),
             "potion_outline.png".PotionImagePath());
-
-    private static string ResolveExistingPath(params string[] candidates)
-    {
-        foreach (var candidate in candidates)
-        {
-            if (ResourceLoader.Exists(candidate))
-                return candidate;
-        }
-
-        return candidates[^1];
-    }
 }

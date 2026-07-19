@@ -112,5 +112,9 @@
   "FURINA_CARD_ARRANGE_SCHEDULE.title": "Arrange Schedule",
   "FURINA_CARD_ARRANGE_SCHEDULE.description": "{ArkheState:choose(Ousia|Pneuma|None):[purple]Next turn[/purple], gain {Block:diff()} [gold]Block[/gold].|[color=#FFFF00]This turn[/color], gain {Block:diff()} [gold]Block[/gold].|[purple]This turn[/purple], gain {Block:diff()} [gold]Block[/gold].\n[color=#FFFF00]Next turn[/color], gain {Block:diff()} [gold]Block[/gold].}",
   "FURINA_CARD_DREAM_WITHIN_A_DREAM.title": "Dream Within a Dream",
-  "FURINA_CARD_DREAM_WITHIN_A_DREAM.description": "Gain {Energy:energyIcons()}."
+  "FURINA_CARD_DREAM_WITHIN_A_DREAM.description": "Gain {Energy:energyIcons()}.",
+  "FURINA_CARD_PURITY_WITHOUT_TAINT.title": "Purity Without Taint",
+  "FURINA_CARD_PURITY_WITHOUT_TAINT.description": "You cannot generate cards during combat.",
+  "FURINA_CARD_UNCEASING_SOLO_DANCE.title": "Unceasing Solo Dance",
+  "FURINA_CARD_UNCEASING_SOLO_DANCE.description": "Whenever you have no cards in [gold]Hand[/gold] during your turn, draw a card."
 }

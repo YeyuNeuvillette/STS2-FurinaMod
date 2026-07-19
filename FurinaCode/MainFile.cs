@@ -16,6 +16,7 @@ using Furina.Characters.Furina.Patches;
 using Furina.Characters.Furina.Powers;
 using Furina.Characters.Furina.RightClick;
 using Furina.Characters.Furina.Relics;
+using Furina.Characters.Furina.Systems;
 using Logger = MegaCrit.Sts2.Core.Logging.Logger;
 using MegaCrit.Sts2.Core.Rooms;
 
@@ -67,7 +68,7 @@ public partial class MainFile : Node
         {
             MovementSystem.ResetCombat();
             TropeSystem.ResetCombat();
-            CardUpgradeEventBus.Clear();
+            global::Furina.Api.Cards.CardUpgradeEventBus.Clear();
             SkipDeathAnimPatch.ClearAll();
             MinionStorage.ClearAll();
             InvitationManager.ClearAll();
@@ -99,7 +100,7 @@ public partial class MainFile : Node
     private static void OnCombatEnded(CombatRoom _)
     {
         TropeSystem.ResetCombat();
-        CardUpgradeEventBus.Clear();
+        global::Furina.Api.Cards.CardUpgradeEventBus.Clear();
     }
 
     private static void RegisterKeywords()

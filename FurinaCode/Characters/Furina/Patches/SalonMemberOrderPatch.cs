@@ -9,6 +9,8 @@ namespace Furina.Characters.Furina.Patches;
 [HarmonyPatch]
 public static class SalonMemberOrderPatch
 {
+    private static readonly FieldInfo? PetsField = AccessTools.Field(typeof(PlayerCombatState), "_pets");
+
     private static readonly Dictionary<Type, int> SalonMemberOrder = new()
     {
         { typeof(MademoiselleCrabaletta), 0 },
@@ -23,8 +25,7 @@ public static class SalonMemberOrderPatch
 
     private static void Postfix(PlayerCombatState __instance)
     {
-        var petsField = AccessTools.Field(typeof(PlayerCombatState), "_pets");
-        if (petsField?.GetValue(__instance) is not List<Creature> pets || pets.Count <= 1)
+        if (PetsField?.GetValue(__instance) is not List<Creature> pets || pets.Count <= 1)
             return;
 
         bool hasSalonMember = false;

@@ -1,4 +1,3 @@
-using Godot;
 using MegaCrit.Sts2.Core.Entities.Cards;
 using STS2RitsuLib.Scaffolding.Content;
 using Furina.Extensions;
@@ -18,7 +17,7 @@ public abstract class BaseCard(
     private string LegacyPrefixedArtFileName => $"{MainFile.ModId.ToLowerInvariant()}_{Id.Entry.ToLegacyCompactFileName()}.png";
 
     public override string CustomPortraitPath =>
-        ResolveExistingPath(
+        AssetPathResolver.ResolveExisting(
             ArtFileName.BigCardsImagePath(),
             ArtFileName.CardsImagePath(),
             LegacyPrefixedArtFileName.BigCardsImagePath(),
@@ -29,7 +28,7 @@ public abstract class BaseCard(
             "card.png".CardsImagePath());
 
     public override string PortraitPath =>
-        ResolveExistingPath(
+        AssetPathResolver.ResolveExisting(
             ArtFileName.CardsImagePath(),
             ArtFileName.BigCardsImagePath(),
             LegacyPrefixedArtFileName.CardsImagePath(),
@@ -40,20 +39,9 @@ public abstract class BaseCard(
             "card.png".BigCardsImagePath());
 
     public override string? CustomBetaPortraitPath =>
-        ResolveExistingPath(
+        AssetPathResolver.ResolveExisting(
             ArtFileName.CardBetaImagePath(),
             LegacyPrefixedArtFileName.CardBetaImagePath(),
             LegacyArtFileName.CardBetaImagePath(),
             PortraitPath);
-
-    private static string ResolveExistingPath(params string[] candidates)
-    {
-        foreach (var candidate in candidates)
-        {
-            if (ResourceLoader.Exists(candidate))
-                return candidate;
-        }
-
-        return candidates[^1];
-    }
 }

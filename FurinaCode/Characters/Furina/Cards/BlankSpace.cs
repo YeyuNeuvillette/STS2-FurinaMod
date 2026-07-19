@@ -11,8 +11,8 @@ using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Rooms;
 using MegaCrit.Sts2.Core.Rewards;
 using MegaCrit.Sts2.Core.ValueProps;
+using Furina.Api.Rewards;
 using Furina.Characters.Base;
-using Furina.Characters.Furina.Patches;
 using Furina.Characters.Furina.Powers;
 using STS2RitsuLib.Interop.AutoRegistration;
 

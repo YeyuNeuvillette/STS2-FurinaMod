@@ -17,6 +17,6 @@ public static class CardUpgradeInternalPatch
         {
             BackupDancer.SubscribeAllForCombat(runState.Players);
         }
-        CardUpgradeEventBus.NotifyCardUpgraded(__instance);
+        global::Furina.Api.Cards.CardUpgradeEventBus.NotifyCardUpgraded(__instance);
     }
 }

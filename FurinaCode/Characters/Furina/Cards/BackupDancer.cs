@@ -9,8 +9,8 @@ using MegaCrit.Sts2.Core.GameActions.Multiplayer;
 using MegaCrit.Sts2.Core.Localization.DynamicVars;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.ValueProps;
+using Furina.Api.Cards;
 using Furina.Characters.Base;
-using Furina.Characters.Furina.Patches;
 using STS2RitsuLib.Interop.AutoRegistration;
 
 namespace Furina.Characters.Furina.Cards;
