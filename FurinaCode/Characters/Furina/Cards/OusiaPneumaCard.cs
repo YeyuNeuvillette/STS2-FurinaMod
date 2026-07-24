@@ -296,6 +296,13 @@ public abstract class OusiaPneumaCard(
         }
     }
 
+    private void SynchronizeArkheState()
+    {
+        var creature = Owner?.Creature;
+        ForceNoneState = creature != null && ArkheSystem.GetDualEffectProvider(creature) != null;
+        UpdateArkheState();
+    }
+
     protected virtual void OnArkheStateChanged(ArkheState oldState, ArkheState newState)
     {
         try
@@ -353,6 +360,7 @@ public abstract class OusiaPneumaCard(
         var creature = Owner.Creature;
         var dualEffectProvider = ArkheSystem.GetDualEffectProvider(creature);
 
+        ForceNoneState = dualEffectProvider != null;
         UpdateArkheState();
 
         GD.Print($"[OusiaPneumaCard] OnPlay for card {base.Id?.Entry ?? "UNKNOWN"}: CurrentArkheState={CurrentArkheState}, ForceNoneState={_forceNoneState}, hasDualProvider={dualEffectProvider != null}");
@@ -403,16 +411,16 @@ public abstract class OusiaPneumaCard(
     public override void AfterCreated()
     {
         base.AfterCreated();
-        UpdateArkheState();
+        SynchronizeArkheState();
     }
 
     public override async Task AfterPowerAmountChanged(PlayerChoiceContext choiceContext, PowerModel power, decimal amount, Creature? applier, CardModel? cardSource)
     {
         await base.AfterPowerAmountChanged(choiceContext, power, amount, applier, cardSource);
         
-        if (ArkheSystem.IsArkhePower(power))
+        if (ArkheSystem.IsArkhePower(power) || power is IArkheDualEffectProvider)
         {
-            UpdateArkheState();
+            SynchronizeArkheState();
         }
     }
 
@@ -422,7 +430,7 @@ public abstract class OusiaPneumaCard(
 
         if (card == this)
         {
-            UpdateArkheState();
+            SynchronizeArkheState();
         }
     }
 

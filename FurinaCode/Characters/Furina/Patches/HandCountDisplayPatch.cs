@@ -3,7 +3,9 @@ using Godot;
 using HarmonyLib;
 using MegaCrit.Sts2.Core.Combat;
 using MegaCrit.Sts2.Core.Entities.Cards;
+using MegaCrit.Sts2.Core.Entities.Players;
 using MegaCrit.Sts2.Core.Nodes.Combat;
+using STS2RitsuLib.Combat.HandSize;
 
 namespace Furina.Characters.Furina.Patches;
 
@@ -41,7 +43,7 @@ internal static class HandCountDisplayPatch
             if (localPlayer?.Character is not global::Furina.Characters.Furina.Furina)
                 return;
 
-            __instance.AddChild(new HandCountDisplay(playerHand)
+            __instance.AddChild(new HandCountDisplay(playerHand, localPlayer)
             {
                 Name = CounterNodeName,
             });
@@ -56,10 +58,12 @@ internal static class HandCountDisplayPatch
 internal sealed partial class HandCountDisplay : Label
 {
     private readonly CardPile _hand;
+    private readonly Player _player;
 
-    internal HandCountDisplay(CardPile hand)
+    internal HandCountDisplay(CardPile hand, Player player)
     {
         _hand = hand;
+        _player = player;
 
         MouseFilter = MouseFilterEnum.Ignore;
         HorizontalAlignment = HorizontalAlignment.Center;
@@ -94,6 +98,7 @@ internal sealed partial class HandCountDisplay : Label
 
     private void Refresh()
     {
-        Text = $"{_hand.Cards.Count} / {CardPile.MaxCardsInHand}";
+        var maxHandSize = MaxHandSizeCalculator.Calculate(_player);
+        Text = $"{_hand.Cards.Count} / {maxHandSize}";
     }
 }

@@ -114,7 +114,13 @@
   "FURINA_CARD_DREAM_WITHIN_A_DREAM.title": "梦中梦",
   "FURINA_CARD_DREAM_WITHIN_A_DREAM.description": "获得{Energy:energyIcons()}。",
   "FURINA_CARD_PURITY_WITHOUT_TAINT.title": "涤净无浊",
-  "FURINA_CARD_PURITY_WITHOUT_TAINT.description": "你无法于战斗中生成卡牌。",
+  "FURINA_CARD_PURITY_WITHOUT_TAINT.description": "战斗中无法生成卡牌。",
   "FURINA_CARD_UNCEASING_SOLO_DANCE.title": "不休独舞",
-  "FURINA_CARD_UNCEASING_SOLO_DANCE.description": "在你的回合，当你没有[gold]手牌[/gold]时，抽1张牌。"
+  "FURINA_CARD_UNCEASING_SOLO_DANCE.description": "在你的回合，当你没有[gold]手牌[/gold]时，抽1张牌。",
+  "FURINA_CARD_SAMSARA.title": "宿命轮回",
+  "FURINA_CARD_SAMSARA.description": "造成{Damage:diff()}点伤害。\n将此牌的一张复制品置于[gold]抽牌堆[/gold]顶。",
+  "FURINA_CARD_KIN_STRIFE.title": "骨肉相残",
+  "FURINA_CARD_KIN_STRIFE.description": "在本回合中，每当你获得[gold]格挡[/gold]时，随机对敌人造成等量的伤害。",
+  "FURINA_CARD_TRIED.title": "受审",
+  "FURINA_CARD_TRIED.description": "将你的[gold]手牌[/gold]上限设为13。\n抽牌直至你的[gold]手牌[/gold]数量达到上限。"
 }

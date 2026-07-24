@@ -116,5 +116,11 @@
   "FURINA_CARD_PURITY_WITHOUT_TAINT.title": "Purity Without Taint",
   "FURINA_CARD_PURITY_WITHOUT_TAINT.description": "You cannot generate cards during combat.",
   "FURINA_CARD_UNCEASING_SOLO_DANCE.title": "Unceasing Solo Dance",
-  "FURINA_CARD_UNCEASING_SOLO_DANCE.description": "Whenever you have no cards in [gold]Hand[/gold] during your turn, draw a card."
+  "FURINA_CARD_UNCEASING_SOLO_DANCE.description": "Whenever you have no cards in [gold]Hand[/gold] during your turn, draw a card.",
+  "FURINA_CARD_SAMSARA.title": "Samsara",
+  "FURINA_CARD_SAMSARA.description": "Deal {Damage:diff()} damage.\nPlace a copy of this card on top of your Draw Pile.",
+  "FURINA_CARD_KIN_STRIFE.title": "Kin Strife",
+  "FURINA_CARD_KIN_STRIFE.description": "Whenever you gain [gold]Block[/gold] this turn, deal that much damage to a random enemy.",
+  "FURINA_CARD_TRIED.title": "Tried",
+  "FURINA_CARD_TRIED.description": "Set your max hand size to 13.\nDraw until your hand reaches the limit."
 }

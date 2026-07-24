@@ -69,5 +69,11 @@
   "FURINA_POWER_PURITY_WITHOUT_TAINT_POWER.smartDescription": "你无法于战斗中生成卡牌。",
   "FURINA_POWER_UNCEASING_SOLO_DANCE_POWER.title": "不休独舞",
   "FURINA_POWER_UNCEASING_SOLO_DANCE_POWER.description": "在你的回合，当你没有[gold]手牌[/gold]时，抽{Amount}张牌。",
-  "FURINA_POWER_UNCEASING_SOLO_DANCE_POWER.smartDescription": "在你的回合，当你没有[gold]手牌[/gold]时，抽{Amount}张牌。"
+  "FURINA_POWER_UNCEASING_SOLO_DANCE_POWER.smartDescription": "在你的回合，当你没有[gold]手牌[/gold]时，抽{Amount}张牌。",
+  "FURINA_POWER_KIN_STRIFE_POWER.title": "骨肉相残",
+  "FURINA_POWER_KIN_STRIFE_POWER.description": "每当你获得[gold]格挡[/gold]时，随机对敌人造成等量的伤害。",
+  "FURINA_POWER_KIN_STRIFE_POWER.smartDescription": "每当你获得[gold]格挡[/gold]时，随机对敌人造成等量的伤害。",
+  "FURINA_POWER_TRIED_POWER.title": "受审",
+  "FURINA_POWER_TRIED_POWER.description": "你的[gold]手牌[/gold]上限为13。",
+  "FURINA_POWER_TRIED_POWER.smartDescription": "你的[gold]手牌[/gold]上限为13。"
 }

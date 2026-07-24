@@ -69,5 +69,11 @@
   "FURINA_POWER_PURITY_WITHOUT_TAINT_POWER.smartDescription": "You cannot generate cards during combat.",
   "FURINA_POWER_UNCEASING_SOLO_DANCE_POWER.title": "Unceasing Solo Dance",
   "FURINA_POWER_UNCEASING_SOLO_DANCE_POWER.description": "Whenever you have no cards in [gold]Hand[/gold] during your turn, draw {Amount} {Amount:plural:card|cards}.",
-  "FURINA_POWER_UNCEASING_SOLO_DANCE_POWER.smartDescription": "Whenever you have no cards in [gold]Hand[/gold] during your turn, draw {Amount} {Amount:plural:card|cards}."
+  "FURINA_POWER_UNCEASING_SOLO_DANCE_POWER.smartDescription": "Whenever you have no cards in [gold]Hand[/gold] during your turn, draw {Amount} {Amount:plural:card|cards}.",
+  "FURINA_POWER_KIN_STRIFE_POWER.title": "Kin Strife",
+  "FURINA_POWER_KIN_STRIFE_POWER.description": "Whenever you gain [gold]Block[/gold], deal that much damage to a random enemy.",
+  "FURINA_POWER_KIN_STRIFE_POWER.smartDescription": "Whenever you gain [gold]Block[/gold], deal that much damage to a random enemy.",
+  "FURINA_POWER_TRIED_POWER.title": "Tried",
+  "FURINA_POWER_TRIED_POWER.description": "Your max hand size is 13.",
+  "FURINA_POWER_TRIED_POWER.smartDescription": "Your max hand size is 13."
 }

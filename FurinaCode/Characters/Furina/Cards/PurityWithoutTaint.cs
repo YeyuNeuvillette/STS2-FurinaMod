@@ -10,8 +10,11 @@ namespace Furina.Characters.Furina.Cards;
 [RegisterCard(typeof(FurinaCardPool))]
 public sealed class PurityWithoutTaint : FurinaCard
 {
+    public override IEnumerable<CardKeyword> CanonicalKeywords =>
+        new List<CardKeyword> { CardKeyword.Ethereal };
+
     public PurityWithoutTaint()
-        : base(1, CardType.Power, CardRarity.Rare, TargetType.Self)
+        : base(0, CardType.Power, CardRarity.Rare, TargetType.Self)
     {
     }
 

@@ -16,7 +16,7 @@ public sealed class ArrangeSchedule : OusiaPneumaCard
 {
     protected override IEnumerable<DynamicVar> CanonicalVars => new List<DynamicVar>
     {
-        new BlockVar(9m, ValueProp.Move)
+        new BlockVar(10m, ValueProp.Move)
     };
 
     public override bool GainsBlock => true;
