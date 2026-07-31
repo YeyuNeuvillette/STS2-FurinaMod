@@ -15,7 +15,7 @@ namespace Furina.Characters.Furina.Cards;
 public sealed class Samsara : TropeCard
 {
     protected override IEnumerable<DynamicVar> CanonicalVars =>
-        new List<DynamicVar> { new DamageVar(4m, ValueProp.Move) };
+        new List<DynamicVar> { new DamageVar(3m, ValueProp.Move) };
 
     public Samsara()
         : base(0, CardType.Attack, CardRarity.Uncommon, TargetType.AnyEnemy)

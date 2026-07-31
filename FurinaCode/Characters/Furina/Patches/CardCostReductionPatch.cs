@@ -1,4 +1,5 @@
 using System.Reflection;
+using System.Linq;
 using HarmonyLib;
 using MegaCrit.Sts2.Core.Entities.Cards;
 using MegaCrit.Sts2.Core.Models;
@@ -32,10 +33,17 @@ public static class CardCostReductionPatch
         if (owner.RunState is not RunState runState)
             return;
 
-        if (!FurinaRunData.CardCostReductions.TryGet(runState, owner.NetId, out var data))
-            return;
+        var reduction = WaterAndJusticeMarker.GetReduction(card);
+        if (reduction <= 0
+            && FurinaRunData.CardCostReductions.TryGet(runState, owner.NetId, out var data)
+            && data.ReducedCards.TryGetValue(card.Id.Entry, out var legacyReduction))
+        {
+            var deckCard = card.DeckVersion ?? card;
+            if (owner.Deck.Cards.Count(deckCardInDeck => deckCardInDeck.Id.Entry == deckCard.Id.Entry) == 1)
+                reduction = legacyReduction;
+        }
 
-        if (data.ReducedCards.TryGetValue(card.Id.Entry, out int reduction))
+        if (reduction > 0)
         {
             __result = System.Math.Max(0, __result - reduction);
         }

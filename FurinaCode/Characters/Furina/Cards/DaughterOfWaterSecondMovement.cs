@@ -13,7 +13,7 @@ namespace Furina.Characters.Furina.Cards;
 [RegisterCard(typeof(FurinaCardPool))]
 public sealed class DaughterOfWaterSecondMovement : MovementCard
 {
-    private static readonly int[] Sequence = [0, 1, 0, 1];
+    private static readonly int[] Sequence = [1, 2];
 
     protected override IReadOnlyList<int> TargetSequence => Sequence;
 

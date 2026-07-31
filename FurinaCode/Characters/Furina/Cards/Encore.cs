@@ -45,7 +45,7 @@ public sealed class Encore : FurinaCard
             var drawnCards = await CardPileCmd.Draw(choiceContext, DynamicVars.Cards.IntValue, Owner);
             foreach (var card in drawnCards)
             {
-                card.EnergyCost.AddThisTurn(-1);
+                card.EnergyCost.AddUntilPlayed(-1);
             }
         }
     }

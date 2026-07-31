@@ -14,7 +14,7 @@ namespace Furina.Characters.Furina.Cards;
 [RegisterCard(typeof(FurinaCardPool))]
 public sealed class DaughterOfWaterFirstMovement : MovementCard
 {
-    private static readonly int[] Sequence = [0, 1, 2];
+    private static readonly int[] Sequence = [3];
 
     protected override IReadOnlyList<int> TargetSequence => Sequence;
 
@@ -44,6 +44,6 @@ public sealed class DaughterOfWaterFirstMovement : MovementCard
 
     protected override void OnUpgrade()
     {
-        EnergyCost.UpgradeBy(-1);
+        AddKeyword(CardKeyword.Retain);
     }
 }

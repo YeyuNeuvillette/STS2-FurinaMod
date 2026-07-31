@@ -49,7 +49,7 @@ public sealed class Script : BaseCard
         if (scriptPile.Cards.Count == 0)
             return;
 
-        var cardsToPlay = scriptPile.Cards.ToList();
+        var cardsToPlay = scriptPile.Cards.AsEnumerable().Reverse().ToList();
         using (TropeSystem.BeginReplay())
         {
             foreach (var card in cardsToPlay)

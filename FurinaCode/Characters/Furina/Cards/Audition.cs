@@ -47,7 +47,7 @@ public sealed class Audition : FurinaCard
         
         foreach (var card in drawnCards)
         {
-            card.EnergyCost.AddThisTurn(-1);
+            card.EnergyCost.AddUntilPlayed(-1);
         }
     }
 

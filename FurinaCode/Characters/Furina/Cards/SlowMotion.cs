@@ -23,6 +23,11 @@ public sealed class SlowMotion : FurinaCard
     protected override IEnumerable<IHoverTip> AdditionalHoverTips =>
         [HoverTipFactory.FromPower<SlowPower>()];
 
+    public override IEnumerable<CardKeyword> CanonicalKeywords => new List<CardKeyword>
+    {
+        CardKeyword.Exhaust
+    };
+
     public SlowMotion()
         : base(1, CardType.Skill, CardRarity.Uncommon, TargetType.AnyEnemy)
     {

@@ -1,6 +1,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Furina.Characters.Base;
+using Furina.Characters.Furina.Patches;
 using Furina.Characters.Furina.Powers;
 using MegaCrit.Sts2.Core.CardSelection;
 using MegaCrit.Sts2.Core.Commands;
@@ -40,13 +41,8 @@ public sealed class WaterAndJustice : FurinaCard
             return;
 
         var deckCard = targetCard.DeckVersion ?? targetCard;
-        FurinaRunData.CardCostReductions.Modify(Owner, data =>
-        {
-            if (data.ReducedCards.ContainsKey(deckCard.Id.Entry))
-                data.ReducedCards[deckCard.Id.Entry] += 2;
-            else
-                data.ReducedCards[deckCard.Id.Entry] = 2;
-        });
+        WaterAndJusticeMarker.AddReduction(deckCard, 2);
+        targetCard.InvokeEnergyCostChanged();
 
         await PowerCmd.Apply<WaterAndJusticePower>(choiceContext, Owner.Creature, 1, Owner.Creature, this);
     }

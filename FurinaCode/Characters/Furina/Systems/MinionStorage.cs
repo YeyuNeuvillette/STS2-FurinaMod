@@ -201,6 +201,7 @@ public static class MinionStorage
         {
             var restoredMinions = new List<Creature>();
             var minionStateMap = new Dictionary<uint, MinionState>();
+            var shouldReapplyEveryoneOutAfterRestore = false;
 
             foreach (var minionState in minionsToRestore)
             {
@@ -359,6 +360,7 @@ public static class MinionStorage
                 if (minionState.StoredTurnCount < _playerTurnCount && minion.CombatState != null)
                 {
                     var turnsMissed = _playerTurnCount - minionState.StoredTurnCount;
+                    shouldReapplyEveryoneOutAfterRestore = true;
                     GD.Print($"[MinionStorage] Turn changed since storage (stored={minionState.StoredTurnCount}, current={_playerTurnCount}, missed={turnsMissed}), refreshing action powers");
 
                     foreach (var power in minion.Powers.ToList())
@@ -390,6 +392,16 @@ public static class MinionStorage
                         foreach (var dv in mat.DynamicVars)
                             GD.Print($"[MinionStorage]     DynamicVar: {dv.Key}={dv.Value.BaseValue}");
                     }
+                }
+            }
+
+            if (shouldReapplyEveryoneOutAfterRestore)
+            {
+                var everyoneOutPower = player.Creature.GetPower<EveryoneOutPower>();
+                if (everyoneOutPower != null)
+                {
+                    GD.Print($"[MinionStorage] Reapplying EveryoneOut extra uses after restore: {everyoneOutPower.Amount}");
+                    await everyoneOutPower.AddExtraUsesToSalonMembers(everyoneOutPower.Amount);
                 }
             }
         }
