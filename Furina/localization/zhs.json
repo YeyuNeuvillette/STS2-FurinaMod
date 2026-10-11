@@ -7,5 +7,9 @@
   "furina.settings.hotkey.usher.label": "乌瑟勋爵",
   "furina.settings.hotkey.usher.description": "乌瑟勋爵的水形连弹行动快捷键。",
   "furina.settings.hotkey.crabaletta.label": "谢贝蕾妲小姐",
-  "furina.settings.hotkey.crabaletta.description": "谢贝蕾妲小姐的蟹钳掩护行动快捷键。"
+  "furina.settings.hotkey.crabaletta.description": "谢贝蕾妲小姐的蟹钳掩护行动快捷键。",
+  "furina.settings.section.salon_automation.title": "沙龙成员自动行动",
+  "furina.settings.section.salon_automation.description": "设置回合结束时如何处理沙龙成员尚未使用的行动次数。",
+  "furina.settings.salon_automation.enabled.label": "自动使用剩余行动",
+  "furina.settings.salon_automation.enabled.description": "回合结束时，谢贝蕾妲小姐和乌瑟勋爵会自动用完所有剩余行动次数。存在多个敌人时，乌瑟勋爵会随机选择目标。"
 }

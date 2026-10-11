@@ -37,16 +37,10 @@ public sealed class SceneStealer : FurinaCard
         if (target == null)
             return;
 
-        await DamageCmd.Attack(DynamicVars.Damage.BaseValue).FromCard(this, cardPlay).Targeting(target)
+        var hitCount = HasNotPlayedOtherCardsThisTurn() ? 2 : 1;
+        await DamageCmd.Attack(DynamicVars.Damage.BaseValue).WithHitCount(hitCount).FromCard(this, cardPlay).Targeting(target)
             .WithHitFx("vfx/vfx_attack_slash")
             .Execute(choiceContext);
-
-        if (HasNotPlayedOtherCardsThisTurn())
-        {
-            await DamageCmd.Attack(DynamicVars.Damage.BaseValue).FromCard(this, cardPlay).Targeting(target)
-                .WithHitFx("vfx/vfx_attack_slash")
-                .Execute(choiceContext);
-        }
     }
 
     protected override void OnUpgrade()

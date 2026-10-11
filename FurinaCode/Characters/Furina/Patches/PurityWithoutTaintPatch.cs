@@ -56,6 +56,9 @@ internal static class PurityWithoutTaintPatch
 
     private static bool ShouldBlock(CardModel card, Player creator)
     {
+        if (card.Type != CardType.Status)
+            return false;
+
         var owner = card.Owner ?? creator;
         return owner.Creature.GetPower<PurityWithoutTaintPower>() != null;
     }

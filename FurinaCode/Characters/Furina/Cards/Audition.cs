@@ -24,6 +24,9 @@ public sealed class Audition : FurinaCard
         new IntVar(_drawKey, 1m)
     };
 
+    public override IEnumerable<CardKeyword> CanonicalKeywords =>
+        new List<CardKeyword> { CardKeyword.Exhaust };
+
     public Audition()
         : base(1, CardType.Attack, CardRarity.Common, TargetType.AnyEnemy)
     {

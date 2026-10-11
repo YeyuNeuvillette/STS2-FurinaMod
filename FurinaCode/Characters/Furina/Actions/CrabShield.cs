@@ -102,6 +102,8 @@ public sealed class CrabShield : ModActionTemplate
         UpdateBlock();
         var block = (int)base.DynamicVars[_blockKey].BaseValue;
         
-        await CreatureCmd.GainBlock(target, block, ValueProp.Move, null);
+        // Salon member actions are not card plays. Their printed block should be
+        // granted verbatim instead of being modified by Frail (or Dexterity).
+        await CreatureCmd.GainBlock(target, block, ValueProp.Move | ValueProp.Unpowered, null);
     }
 }

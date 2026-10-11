@@ -61,6 +61,12 @@ public abstract class TropeCard : BaseCard
     protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay cardPlay)
     {
         if (!TropeSystem.IsReplaying && Owner != null)
+        {
+            // ResourceInfo is captured while the card is actually paid for. It
+            // remains correct even when a hand-only/global discount stops
+            // applying after the card moves to the Play or Script pile.
+            TropeSystem.CaptureCostForScript(this, cardPlay.Resources.EnergyValue);
             await TropeSystem.EnsureScriptCard(Owner);
+        }
     }
 }

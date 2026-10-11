@@ -1,24 +1,23 @@
-using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using HarmonyLib;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Saves.Runs;
+using STS2RitsuLib.Utils;
 
 namespace Furina.Characters.Furina.Patches;
 
 internal static class WaterAndJusticeMarker
 {
-    private const string SavedReductionKey = "FurinaWaterAndJusticeReduction";
-    private static readonly ConditionalWeakTable<CardModel, ReductionState> Reductions = new();
+    private const string LegacySavedReductionKey = "FurinaWaterAndJusticeReduction";
+    private static readonly SavedAttachedState<CardModel, int> Reductions =
+        new("FurinaWaterAndJusticeReduction", defaultValueFactory: () => 0);
 
     public static void AddReduction(CardModel card, int amount)
     {
         if (amount <= 0)
             return;
 
-        var state = Reductions.GetValue(card, _ => new ReductionState());
-        state.Amount += amount;
+        Reductions.Update(card, current => current + amount);
         card.InvokeEnergyCostChanged();
     }
 
@@ -38,16 +37,15 @@ internal static class WaterAndJusticeMarker
         if (amount <= 0)
             return;
 
-        Reductions.Remove(card);
-        Reductions.Add(card, new ReductionState { Amount = amount });
+        Reductions[card] = amount;
         card.InvokeEnergyCostChanged();
     }
 
     public static bool TryGetOwnReduction(CardModel card, out int amount)
     {
-        if (Reductions.TryGetValue(card, out var state) && state.Amount > 0)
+        if (Reductions.TryGetValue(card, out var reduction) && reduction > 0)
         {
-            amount = state.Amount;
+            amount = reduction;
             return true;
         }
 
@@ -58,49 +56,24 @@ internal static class WaterAndJusticeMarker
     private static bool TryReadSavedReduction(SerializableCard save, out int amount)
     {
         amount = save.Props?.ints?
-            .FirstOrDefault(prop => prop.name == SavedReductionKey)
+            .FirstOrDefault(prop => prop.name == LegacySavedReductionKey)
             .value ?? 0;
         return amount > 0;
     }
 
-    private static void WriteSavedReduction(SerializableCard save, int amount)
-    {
-        if (amount <= 0)
-            return;
-
-        save.Props ??= new SavedProperties();
-        save.Props.ints ??= new List<SavedProperties.SavedProperty<int>>();
-
-        var savedProperty = new SavedProperties.SavedProperty<int>(SavedReductionKey, amount);
-        var existingIndex = save.Props.ints.FindIndex(prop => prop.name == SavedReductionKey);
-        if (existingIndex >= 0)
-            save.Props.ints[existingIndex] = savedProperty;
-        else
-            save.Props.ints.Add(savedProperty);
-    }
-
-    private sealed class ReductionState
-    {
-        public int Amount { get; set; }
-    }
-
-    [HarmonyPatch(typeof(CardModel), nameof(CardModel.ToSerializable))]
-    private static class CardToSerializablePatch
-    {
-        private static void Postfix(CardModel __instance, ref SerializableCard __result)
-        {
-            if (TryGetOwnReduction(__instance, out var amount))
-                WriteSavedReduction(__result, amount);
-        }
-    }
-
+    // Compatibility for saves created before SavedAttachedState was adopted. The legacy
+    // property is read once and is never written again, so future replay serialization only
+    // sees the registered RitsuLib property name.
     [HarmonyPatch(typeof(CardModel), nameof(CardModel.FromSerializable))]
     private static class CardFromSerializablePatch
     {
         private static void Postfix(SerializableCard save, CardModel __result)
         {
             if (TryReadSavedReduction(save, out var amount))
-                RestoreReduction(__result, amount);
+            {
+                var current = Reductions.GetValueOrDefault(__result, 0);
+                RestoreReduction(__result, System.Math.Max(current, amount));
+            }
         }
     }
 }

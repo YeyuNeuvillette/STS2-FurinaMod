@@ -93,7 +93,9 @@ public sealed class Entrust : OusiaPneumaCard
     {
         if (CurrentArkheState is ArkheState.Pneuma && side == CombatSide.Player && Pile?.Type == PileType.Hand)
         {
-            await CardCmd.Exhaust(choiceContext, this, causedByEthereal: true);
+            // 0.111 changed Exhaust from Task to Task<CardPileAddResult?>.
+            // Consuming the result here binds this build to the current API.
+            _ = await CardCmd.Exhaust(choiceContext, this, causedByEthereal: true);
         }
     }
 

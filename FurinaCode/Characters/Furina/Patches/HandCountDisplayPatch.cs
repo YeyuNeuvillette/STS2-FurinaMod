@@ -68,7 +68,9 @@ internal sealed partial class HandCountDisplay : Label
         MouseFilter = MouseFilterEnum.Ignore;
         HorizontalAlignment = HorizontalAlignment.Center;
         VerticalAlignment = VerticalAlignment.Center;
-        ZIndex = 10;
+        // Keep this in the combat UI's normal canvas layer. A positive Z index
+        // makes it draw above modal backstops and popup menus.
+        ZIndex = 0;
 
         AnchorLeft = 0.5f;
         AnchorTop = 0f;

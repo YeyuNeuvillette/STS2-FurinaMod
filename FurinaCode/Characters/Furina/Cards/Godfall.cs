@@ -19,7 +19,7 @@ public sealed class Godfall : FurinaCard
     };
 
     public Godfall()
-        : base(6, CardType.Attack, CardRarity.Rare, TargetType.AnyEnemy)
+        : base(5, CardType.Attack, CardRarity.Rare, TargetType.AnyEnemy)
     {
     }
 

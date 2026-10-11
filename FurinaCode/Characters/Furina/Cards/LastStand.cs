@@ -19,8 +19,6 @@ public sealed class LastStand : TropeCard
         new DamageVar(13m, ValueProp.Move)
     };
 
-    protected override HashSet<CardTag> CanonicalTags => new HashSet<CardTag> { CardTag.Strike };
-
     public LastStand()
         : base(1, CardType.Attack, CardRarity.Uncommon, TargetType.AnyEnemy)
     {

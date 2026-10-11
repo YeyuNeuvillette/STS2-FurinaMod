@@ -28,6 +28,7 @@ public sealed class FurinaHotkeySettings
     public string ChevalmarinKey { get; set; } = "C";
     public string UsherKey { get; set; } = "V";
     public string CrabalettaKey { get; set; } = "B";
+    public bool AutoUseUnusedSalonActions { get; set; } = true;
 }
 
 public static class FurinaHotkeyService
@@ -43,6 +44,7 @@ public static class FurinaHotkeyService
     private static string _currentChevalmarinKey = "C";
     private static string _currentUsherKey = "V";
     private static string _currentCrabalettaKey = "B";
+    private static bool _autoUseUnusedSalonActions = true;
 
     private static readonly I18N I18N = RitsuLibFramework.CreateLocalization(
         $"{MainFile.ModId}-Settings",
@@ -96,6 +98,17 @@ public static class FurinaHotkeyService
                     RebindCrabaletta(v);
                 });
 
+            var autoUseUnusedActionsBinding = new ModSettingsValueBinding<FurinaHotkeySettings, bool>(
+                MainFile.ModId,
+                SettingsKey,
+                SaveScope.Global,
+                s => s.AutoUseUnusedSalonActions,
+                (s, v) =>
+                {
+                    s.AutoUseUnusedSalonActions = v;
+                    _autoUseUnusedSalonActions = v;
+                });
+
             RitsuLibFramework.RegisterModSettings(
                 MainFile.ModId,
                 page => page
@@ -122,7 +135,27 @@ public static class FurinaHotkeyService
                             ModSettingsText.Literal("Mademoiselle Crabaletta"),
                             crabalettaBinding,
                             description: ModSettingsText.Literal(
-                                "Hotkey for Crabaletta's Crab Shield action."))));
+                                "Hotkey for Crabaletta's Crab Shield action.")))
+                    .AddSection("salon_automation", section => section
+                        .WithTitle(ModSettingsText.I18N(
+                            I18N,
+                            "furina.settings.section.salon_automation.title",
+                            "Automatic Salon Actions"))
+                        .WithDescription(ModSettingsText.I18N(
+                            I18N,
+                            "furina.settings.section.salon_automation.description",
+                            "Configure how unused Salon Member actions are handled at the end of your turn."))
+                        .AddToggle(
+                            "auto_use_unused_salon_actions",
+                            ModSettingsText.I18N(
+                                I18N,
+                                "furina.settings.salon_automation.enabled.label",
+                                "Automatically use remaining actions"),
+                            autoUseUnusedActionsBinding,
+                            ModSettingsText.I18N(
+                                I18N,
+                                "furina.settings.salon_automation.enabled.description",
+                                "At the end of your turn, Mademoiselle Crabaletta and Gentilhomme Usher automatically use all remaining actions. Usher chooses a random enemy."))));
 
             MainFile.Logger.Info("[FurinaHotkey] Settings page registered successfully.");
         }
@@ -148,6 +181,7 @@ public static class FurinaHotkeyService
             _currentChevalmarinKey = settings.ChevalmarinKey;
             _currentUsherKey = settings.UsherKey;
             _currentCrabalettaKey = settings.CrabalettaKey;
+            _autoUseUnusedSalonActions = settings.AutoUseUnusedSalonActions;
 
             MainFile.Logger.Info(
                 $"[FurinaHotkey] Initializing hotkeys: Chevalmarin={settings.ChevalmarinKey}, Usher={settings.UsherKey}, Crabaletta={settings.CrabalettaKey}");
@@ -246,6 +280,8 @@ public static class FurinaHotkeyService
         if (locEntryKey.StartsWith("PURE_WATER_NOTE")) return _currentChevalmarinKey;
         return null;
     }
+
+    public static bool AutoUseUnusedSalonActions => _autoUseUnusedSalonActions;
 
     private static void TryTriggerMinionAction(Type minionType)
     {

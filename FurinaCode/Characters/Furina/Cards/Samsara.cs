@@ -32,7 +32,8 @@ public sealed class Samsara : TropeCard
             .Execute(choiceContext);
 
         var copy = CreateClone();
-        await CardPileCmd.AddGeneratedCardToCombat(copy, PileType.Draw, Owner, CardPilePosition.Top);
+        var addResult = await CardPileCmd.AddGeneratedCardToCombat(copy, PileType.Draw, Owner, CardPilePosition.Top);
+        CardCmd.PreviewCardPileAdd(addResult, 2.2f);
     }
 
     protected override void OnUpgrade()

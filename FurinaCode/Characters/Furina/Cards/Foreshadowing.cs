@@ -15,7 +15,7 @@ public sealed class Foreshadowing : FurinaCard
 {
     protected override IEnumerable<DynamicVar> CanonicalVars => new List<DynamicVar>
     {
-        new PowerVar<ForeshadowingPower>(2m)
+        new PowerVar<ForeshadowingPower>(3m)
     };
 
     public Foreshadowing()

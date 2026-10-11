@@ -1,10 +1,12 @@
 using System.Threading;
+using System.Runtime.CompilerServices;
 using Furina.Characters.Furina.Cards;
 using Godot;
 using MegaCrit.Sts2.Core.Commands;
 using MegaCrit.Sts2.Core.Entities.Cards;
 using MegaCrit.Sts2.Core.Entities.Players;
 using MegaCrit.Sts2.Core.GameActions.Multiplayer;
+using MegaCrit.Sts2.Core.Models;
 using STS2RitsuLib.CardPiles;
 using ScriptCard = Furina.Characters.Furina.Cards.Script;
 
@@ -14,6 +16,7 @@ public static class TropeSystem
 {
     private const string PileId = "FURINA_CARDPILE_SCRIPT";
     private static readonly AsyncLocal<int> ReplayDepth = new();
+    private static ConditionalWeakTable<CardModel, ScriptCostSnapshot> _pendingScriptCosts = new();
     private static PileType? _pileType;
 
     public static bool IsReplaying => ReplayDepth.Value > 0;
@@ -51,6 +54,31 @@ public static class TropeSystem
     public static void ResetCombat()
     {
         ReplayDepth.Value = 0;
+        _pendingScriptCosts = new ConditionalWeakTable<CardModel, ScriptCostSnapshot>();
+    }
+
+    public static void CaptureCostForScript(CardModel card, int cost)
+    {
+        _pendingScriptCosts.Remove(card);
+        _pendingScriptCosts.Add(card, new ScriptCostSnapshot(Math.Max(0, cost)));
+    }
+
+    public static bool TryTakeCapturedScriptCost(CardModel card, out int cost)
+    {
+        if (_pendingScriptCosts.TryGetValue(card, out var snapshot))
+        {
+            cost = snapshot.Cost;
+            _pendingScriptCosts.Remove(card);
+            return true;
+        }
+
+        cost = 0;
+        return false;
+    }
+
+    public static void ForgetCapturedScriptCost(CardModel card)
+    {
+        _pendingScriptCosts.Remove(card);
     }
 
     public static CardPile GetPile(Player player) => PileType.GetPile(player);
@@ -90,4 +118,6 @@ public static class TropeSystem
             ReplayDepth.Value = Math.Max(0, ReplayDepth.Value - 1);
         }
     }
+
+    private sealed record ScriptCostSnapshot(int Cost);
 }

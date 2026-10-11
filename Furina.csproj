@@ -41,7 +41,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="STS2.RitsuLib" Version="0.5.0" PrivateAssets="all"/>
+    <PackageReference Include="STS2.RitsuLib" Version="0.6.2" PrivateAssets="all"/>
     <PackageReference Include="FuYnAloft.Sts2.MinionLib" Version="0.6.0" PrivateAssets="all"/>
     <AdditionalFiles Include="localization/**/*.json"/>
   </ItemGroup>

@@ -7,5 +7,9 @@
   "furina.settings.hotkey.usher.label": "Gentilhomme Usher",
   "furina.settings.hotkey.usher.description": "Hotkey for Usher's Hydro Barrage action.",
   "furina.settings.hotkey.crabaletta.label": "Mademoiselle Crabaletta",
-  "furina.settings.hotkey.crabaletta.description": "Hotkey for Crabaletta's Crab Shield action."
+  "furina.settings.hotkey.crabaletta.description": "Hotkey for Crabaletta's Crab Shield action.",
+  "furina.settings.section.salon_automation.title": "Automatic Salon Actions",
+  "furina.settings.section.salon_automation.description": "Configure how unused Salon Member actions are handled at the end of your turn.",
+  "furina.settings.salon_automation.enabled.label": "Automatically use remaining actions",
+  "furina.settings.salon_automation.enabled.description": "At the end of your turn, Mademoiselle Crabaletta and Gentilhomme Usher automatically use all remaining actions. When multiple enemies are present, Usher chooses a random target."
 }

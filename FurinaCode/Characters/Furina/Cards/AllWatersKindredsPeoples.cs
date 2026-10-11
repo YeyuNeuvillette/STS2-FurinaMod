@@ -14,7 +14,7 @@ public sealed class AllWatersKindredsPeoples : FurinaCard
     public override IEnumerable<CardKeyword> CanonicalKeywords => new List<CardKeyword> { CardKeyword.Exhaust };
 
     public AllWatersKindredsPeoples()
-        : base(2, CardType.Skill, CardRarity.Rare, TargetType.None)
+        : base(3, CardType.Skill, CardRarity.Rare, TargetType.None)
     {
     }
 
@@ -23,14 +23,20 @@ public sealed class AllWatersKindredsPeoples : FurinaCard
         if (Owner == null)
             return;
 
-        foreach (var card in PileType.Hand.GetPile(Owner).Cards)
+        var affectedPiles = new[] { PileType.Draw, PileType.Hand, PileType.Discard };
+        foreach (var pileType in affectedPiles)
         {
-            card.EnergyCost.AddThisTurn(-1);
+            foreach (var card in pileType.GetPile(Owner).Cards)
+            {
+                if (CurrentUpgradeLevel > 0)
+                    card.EnergyCost.AddUntilPlayed(-1);
+                else
+                    card.EnergyCost.AddThisTurn(-1);
+            }
         }
     }
 
     protected override void OnUpgrade()
     {
-        EnergyCost.UpgradeBy(-1);
     }
 }

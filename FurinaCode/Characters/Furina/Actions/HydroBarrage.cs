@@ -33,6 +33,15 @@ public sealed class HydroBarrage : ModActionTemplate
 
     public int IntentDamage => Math.Max(0, base.DynamicVars[_damageKey].IntValue);
 
+    public void AddUses(decimal amount)
+    {
+        if (amount <= 0m)
+            return;
+
+        base.DynamicVars[_usesKey].BaseValue += amount;
+        InvokeDisplayAmountChanged();
+    }
+
     protected override IEnumerable<DynamicVar> CanonicalVars => new List<DynamicVar> 
     { 
         new DynamicVar(_usesKey, 1m),

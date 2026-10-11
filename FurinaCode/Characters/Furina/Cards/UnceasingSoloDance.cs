@@ -10,7 +10,7 @@ namespace Furina.Characters.Furina.Cards;
 public sealed class UnceasingSoloDance : FurinaCard
 {
     public UnceasingSoloDance()
-        : base(2, CardType.Power, CardRarity.Rare, TargetType.Self)
+        : base(1, CardType.Power, CardRarity.Rare, TargetType.Self)
     {
     }
 

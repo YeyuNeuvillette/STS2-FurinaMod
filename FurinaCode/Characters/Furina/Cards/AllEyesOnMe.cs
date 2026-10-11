@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using MegaCrit.Sts2.Core.Commands;
 using MegaCrit.Sts2.Core.Entities.Cards;
+using MegaCrit.Sts2.Core.Entities.Creatures;
 using MegaCrit.Sts2.Core.GameActions.Multiplayer;
 using MegaCrit.Sts2.Core.Localization.DynamicVars;
 using MegaCrit.Sts2.Core.ValueProps;
@@ -14,11 +15,14 @@ public sealed class AllEyesOnMe : FurinaCard
 {
     protected override IEnumerable<DynamicVar> CanonicalVars => new List<DynamicVar>
     {
-        new DamageVar(15m, ValueProp.Move),
+        new CalculationBaseVar(17m),
+        new ExtraDamageVar(17m),
+        new CalculatedDamageVar(ValueProp.Move).WithMultiplier(static (card, _) =>
+            card is AllEyesOnMe allEyesOnMe && allEyesOnMe.HasEnoughOtherCardsInHand() ? 1m : 0m),
         new EnergyVar(2)
     };
 
-    protected override bool ShouldGlowGoldInternal => CountOtherCardsInHand() >= 9;
+    protected override bool ShouldGlowGoldInternal => HasEnoughOtherCardsInHand();
 
     public AllEyesOnMe()
         : base(2, CardType.Attack, CardRarity.Rare, TargetType.AnyEnemy)
@@ -34,23 +38,24 @@ public sealed class AllEyesOnMe : FurinaCard
         if (target == null)
             return;
 
-        var damage = DynamicVars.Damage.BaseValue;
-
-        if (CountOtherCardsInHand() >= 9)
+        if (HasEnoughOtherCardsInHand())
         {
-            damage *= 2;
             await PlayerCmd.GainEnergy(DynamicVars.Energy.IntValue, Owner);
         }
 
-        await DamageCmd.Attack(damage).FromCard(this, cardPlay).Targeting(target)
+        await DamageCmd.Attack(DynamicVars.CalculatedDamage).FromCard(this, cardPlay).Targeting(target)
             .WithHitFx("vfx/vfx_attack_slash")
             .Execute(choiceContext);
     }
 
     protected override void OnUpgrade()
     {
-        DynamicVars.Damage.UpgradeValueBy(3m);
+        DynamicVars.CalculationBase.UpgradeValueBy(3m);
+        DynamicVars.ExtraDamage.UpgradeValueBy(3m);
+        DynamicVars.Energy.UpgradeValueBy(1m);
     }
+
+    private bool HasEnoughOtherCardsInHand() => CountOtherCardsInHand() >= 9;
 
     private int CountOtherCardsInHand()
     {

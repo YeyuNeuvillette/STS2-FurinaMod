@@ -40,6 +40,11 @@ public sealed class SufferingHolySon : FurinaCard
             data.BossMaxHpReduction += reduction;
         });
 
+        // If this is played during the boss fight, the combat-start hook has
+        // already run, so apply only this card's newly-added reduction now.
+        if (SufferingHolySonManager.IsBossCombat(CombatState))
+            SufferingHolySonManager.ApplyReduction(CombatState!.Enemies, reduction);
+
         await PowerCmd.Apply<SufferingHolySonPower>(choiceContext, Owner.Creature, reduction, Owner.Creature, this);
     }
 

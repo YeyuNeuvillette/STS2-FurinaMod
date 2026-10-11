@@ -17,7 +17,7 @@ namespace Furina.Characters.Furina.Cards;
 [RegisterCard(typeof(FurinaCardPool))]
 public sealed class Rondo : BaseCard, IAttackHitHookListener
 {
-    protected override IEnumerable<DynamicVar> CanonicalVars => new List<DynamicVar> { new DamageVar(5m, ValueProp.Move) };
+    protected override IEnumerable<DynamicVar> CanonicalVars => new List<DynamicVar> { new DamageVar(6m, ValueProp.Move) };
 
     public Rondo()
         : base(1, CardType.Attack, CardRarity.Common, TargetType.AllEnemies)

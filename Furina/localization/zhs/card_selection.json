@@ -2,5 +2,7 @@
   "FURINA-REHEARSAL.selectionScreenPrompt": "选择1张手牌。",
   "FURINA-DAUGHTER_OF_WATER_THIRD_MOVEMENT.selectionScreenPrompt": "选择任意张手牌消耗。",
   "FURINA-WATERANDJUSTICE.selectionScreenPrompt": "选择1张手牌。",
-  "FURINA-MISE_EN_SCENE.selectionScreenPrompt": "选择1张牌。"
+  "FURINA-MISE_EN_SCENE.selectionScreenPrompt": "选择1张牌。",
+  "FURINA-EDITING.selectionScreenPrompt": "选择[gold]剧本[/gold]中的1张牌加入[gold]手牌[/gold]。",
+  "FURINA-REVIEW.selectionScreenPrompt": "选择[gold]剧本[/gold]中的{Amount}张牌加入[gold]手牌[/gold]。"
 }

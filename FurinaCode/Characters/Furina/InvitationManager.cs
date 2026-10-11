@@ -172,8 +172,22 @@ public static class InvitationManager
 
     private static Type SelectDeterministicSalonTarget(Player player, int realizedCount)
     {
-        var existing = player.PlayerCombatState?.Pets
+        var existingSalonMembers = player.PlayerCombatState?.Pets
             .Where(IsSalonMember)
+            .ToArray() ?? [];
+
+        // Restoring several Ousia invitations happens one invitation at a time.
+        // Always summon every missing Salon member before enhancing an existing
+        // one; otherwise the member created by the first iteration is selected
+        // again by every subsequent iteration.
+        var existingTypes = existingSalonMembers
+            .Select(pet => pet.Monster!.GetType())
+            .ToHashSet();
+        var missingType = SalonMemberTypes.FirstOrDefault(type => !existingTypes.Contains(type));
+        if (missingType != null)
+            return missingType;
+
+        var existing = existingSalonMembers
             .OrderBy(pet => pet.MaxHp)
             .ThenBy(pet => Array.IndexOf(SalonMemberTypes, pet.Monster!.GetType()))
             .FirstOrDefault();
